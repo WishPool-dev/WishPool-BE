@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  wishpool-db:
+    image: mysql:8.0
+    container_name: wishpool-db-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD} # root 비밀번호 (관리용)
+      MYSQL_DATABASE: ${DB_NAME}                  # DB 생성
+      MYSQL_USER: ${DB_USER_PROD}                     # 앱 전용 사용자 생성
+      MYSQL_PASSWORD: ${DB_PROD_PASSWORD}              # 앱 전용 사용자 비밀번호
+    ports:
+      - ${DB_PROD_PORT}
+    volumes:
+      - wishpool-db-data:/var/lib/mysql
+volumes:
+  wishpool-db-data:
