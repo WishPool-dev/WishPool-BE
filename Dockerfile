@@ -18,7 +18,7 @@ RUN ./gradlew dependencies
 
 # 실행 권한 부여 및 의존성 캐시
 RUN chmod +x gradlew \
-    && ./gradlew dependencies --no-daemon \
+    && ./gradlew dependencies --no-daemon
 
 # 나머지 소스 코드를 복사 및 빌드
 COPY src ./src
