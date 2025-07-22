@@ -5,6 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### 환경 설정###
+.env
+
 ### STS ###
 .apt_generated
 .classpath
@@ -37,4 +40,5 @@ out/
 .vscode/
 
 ### .yml 제거 ###
-**/src/main/resources/
+**/src/main/resources/fifth-boulder-465815-c9-f67e0c16635d.json
+**/src/main/resources/**
