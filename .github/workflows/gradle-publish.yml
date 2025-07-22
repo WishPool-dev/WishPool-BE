@@ -58,8 +58,8 @@ jobs:
       - name: SSH 접속 후 deploy.sh 실행
         uses: 'google-github-actions/ssh-execute@v1'
         with:
-          instance_name: 'your-gcp-instance-name' # GCP 인스턴스 이름
-          zone: 'asia-northeast3-a' # GCP 인스턴스 존
+          instance_name: 'wishpool'
+          zone: 'asia-northeast3-a'
           command: |
             cd ~/my-springboot-app
             git pull
