@@ -16,7 +16,7 @@ COPY src ./src
 RUN ./gradlew build -x test
 
 # 경량화 이미지 실행
-FROM openjdk:17-jre-slim
+FROM openjdk:17-slim
 
 # 작업 디렉토리를 설정
 WORKDIR /app
