@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: wishpool-app
 
 jobs:
-  # 3. 첫 번째 Job: Docker 이미지 빌드 및 푸시
+  # 3. 첫 번째 Job: jar 빌드 및 Docker 이미지 푸시
   build-and-push:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
@@ -25,6 +25,17 @@ jobs:
       # 소스 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v4
+
+      # 👇 1. JDK 17 설정 단계 추가
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 👇 2. Gradle 빌드 실행 단계 추가
+      - name: Build with Gradle
+        run: ./gradlew build -x test
 
       # GCP 인증
       - name: Authenticate to Google Cloud
@@ -41,12 +52,12 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          # 이미지 태그: asia-northeast3-docker.pkg.dev/프로젝트ID/이미지이름:커밋ID
           tags: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
+  # GCP 인스턴스 배포 Job은 이전과 동일합니다.
   deploy-to-instance:
     name: GCP 배포
-    needs: build-and-push # build-and-push Job이 성공해야 실행됨
+    needs: build-and-push
     runs-on: ubuntu-latest
 
     steps:
@@ -60,6 +71,7 @@ jobs:
         with:
           instance_name: 'wishpool'
           zone: 'asia-northeast3-a'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           command: |
             cd ~/my-springboot-app
             git pull
