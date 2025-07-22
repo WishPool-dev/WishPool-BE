@@ -1,44 +1,68 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
+name: wishpool CICD
 
-name: Gradle Package
-
+# 1. 워크플로우 실행 조건
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
+      
+# 2. 워크플로우에서 사용할 환경 변수
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GAR_LOCATION: asia-northeast3
+  IMAGE_NAME: wishpool-app
 
 jobs:
-  build:
-
+  # 3. 첫 번째 Job: Docker 이미지 빌드 및 푸시
+  build-and-push:
+    name: Build and Push Docker Image
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      contents: 'read'
+      id-token: 'write'
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+      # 소스 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+      # GCP 인증
+      - name: Authenticate to Google Cloud
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-    - name: Build with Gradle
-      run: ./gradlew build
+      # Artifact Registry에 대한 Docker 인증 설정
+      - name: Set up Docker credential for GAR
+        run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
 
-    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
-    - name: Publish to GitHub Packages
-      run: ./gradlew publish
-      env:
-        USERNAME: ${{ github.actor }}
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Docker 이미지 빌드 및 Artifact Registry에 푸시
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          # 이미지 태그: asia-northeast3-docker.pkg.dev/프로젝트ID/이미지이름:커밋ID
+          tags: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+  deploy-to-instance:
+    name: GCP 배포
+    needs: build-and-push # build-and-push Job이 성공해야 실행됨
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: GCP 인증
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: SSH 접속 후 deploy.sh 실행
+        uses: 'google-github-actions/ssh-execute@v1'
+        with:
+          instance_name: 'your-gcp-instance-name' # GCP 인스턴스 이름
+          zone: 'asia-northeast3-a' # GCP 인스턴스 존
+          command: |
+            cd ~/my-springboot-app
+            git pull
+            export DOKCER_DB_PASSWORD=${{ secrets.DOKCER_DB_PASSWORD }}
+            export IMAGE_TAG=${{ github.sha }}
+            ./scripts/deploy.sh
