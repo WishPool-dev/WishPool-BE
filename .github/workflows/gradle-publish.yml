@@ -109,8 +109,8 @@ jobs:
           username: ${{ secrets.GCP_SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            chmod +x ./scripts/deploy.sh
             cd ~/wishpool/WishPool-BE
+            chmod +x ./scripts/deploy.sh
             git pull
             export DB_URL_PROD=${{ secrets.DB_URL_PROD }}
             export DB_USER_PROD=${{ secrets.DB_USER_PROD }}
