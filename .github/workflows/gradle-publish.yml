@@ -111,6 +111,13 @@ jobs:
           script: |
             cd ~/wishpool/WishPool-BE
             git pull
-            export DOKCER_DB_PASSWORD=${{ secrets.DOKCER_DB_PASSWORD }}
+            export DB_URL_PROD=${{ secrets.DB_URL_PROD }}
+            export DB_USER_PROD=${{ secrets.DB_USER_PROD }}
+            export DOCKER_DB_PASSWORD=${{ secrets.DOCKER_DB_PASSWORD }}
+            
+            # 👇 아래 3줄을 추가/수정합니다.
+            export IMAGE_REPO_URL=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}
+            export IMAGE_NAME=${{ env.IMAGE_NAME }}
             export IMAGE_TAG=${{ github.sha }}
+    
             ./scripts/deploy.sh
