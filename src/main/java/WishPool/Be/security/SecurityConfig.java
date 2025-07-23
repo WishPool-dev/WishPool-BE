@@ -62,7 +62,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml",
                                 "/swagger-resources/**",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/actuator/health"
                         ).permitAll()
                         // /api/** 는 인증 필요
                         .requestMatchers("/api/**").authenticated()
