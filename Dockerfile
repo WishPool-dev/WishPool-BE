@@ -6,7 +6,7 @@ WORKDIR /app
 
 # GitHub Actions Runner에서 빌드된 JAR 파일을 복사
 # build/libs/ 디렉토리 안에 하나의 jar 파일만 있다고 가정
-COPY build/libs/*.jar app.jar
+COPY *.jar app.jar
 
 # 컨테이너 실행
 ENTRYPOINT ["java","-jar","/app/app.jar"]
