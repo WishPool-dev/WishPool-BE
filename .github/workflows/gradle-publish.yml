@@ -101,18 +101,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: GCP 인증
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-
+      # 이 잡에서는 GCP 인증이 더 이상 필요 없습니다.
       - name: SSH 접속 후 deploy.sh 실행
-        uses: 'google-github-actions/ssh-execute@v0'
+        uses: appleboy/ssh-action@master
         with:
-          instance_name: 'wishpool'
-          zone: 'asia-northeast3-a'
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          command: |
+          host: ${{ secrets.GCP_INSTANCE_IP }}
+          username: ${{ secrets.GCP_SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
             cd ~/my-springboot-app
             git pull
             export DOKCER_DB_PASSWORD=${{ secrets.DOKCER_DB_PASSWORD }}
