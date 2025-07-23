@@ -4,11 +4,13 @@
 BLUE_PORT=8081
 GREEN_PORT=8082
 NGINX_CONF="/etc/nginx/conf.d/service-url.inc"
-# 👇 docker-compose의 전체 경로를 명시
 DOCKER_COMPOSE_CMD="/usr/local/bin/docker-compose"
 
+# 👇 GitHub Actions로부터 전달받은 변수로 전체 이미지 경로를 생성합니다.
+IMAGE_FULL_PATH="${IMAGE_REPO_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
+export IMAGE_FULL_PATH # docker-compose.app.yml이 이 변수를 사용합니다.
+
 # 2. 현재 실행 중인 포트 확인
-# 👇 sudo를 사용해 파일 읽기 권한 확보
 CURRENT_PORT=$(sudo cat ${NGINX_CONF} | grep -Po '[0-9]+' | tail -1)
 
 echo ">>> Current service port: ${CURRENT_PORT}"
@@ -26,7 +28,6 @@ fi
 
 # 4. 새로운 버전(Green)의 Docker 이미지 다운로드 및 컨테이너 실행
 export HOST_PORT=${TARGET_PORT}
-# 👇 docker-compose를 전체 경로로 실행
 ${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml pull
 ${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml up -d
 
@@ -44,7 +45,6 @@ for i in {1..10}; do
     echo ">>> Traffic switched to port ${TARGET_PORT}."
 
     # 7. 기존 버전(Old) 컨테이너 종료
-    # 👇 docker-compose를 전체 경로로 실행
     ${DOCKER_COMPOSE_CMD} -p wishpool-app-${OLD_PORT} -f docker-compose.app.yml down
     echo ">>> Old container on port ${OLD_PORT} stopped."
 
@@ -57,6 +57,5 @@ done
 
 # 8. 헬스 체크 최종 실패 시
 echo ">>> Deployment failed."
-# 👇 docker-compose를 전체 경로로 실행
 ${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml down
 exit 1
