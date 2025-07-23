@@ -59,7 +59,15 @@ for i in {1..10}; do
   sleep 5
 done
 
-# 8. 헬스 체크 최종 실패 시
+# 8. 헬스 체크 최종 실패 시 (for 루프가 끝난 후)
 echo ">>> Deployment failed."
+
+# 실패한 컨테이너의 로그를 100줄 출력
+echo ">>> Printing logs from failed container..."
+${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml logs --tail="100"
+
+# 실패한 컨테이너와 네트워크 정리
 ${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml down
+
+# 실패 코드로 스크립트 종료
 exit 1
