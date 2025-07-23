@@ -35,17 +35,13 @@ jobs:
           ./gradlew build -x test
           echo "=== build/libs 디렉토리 파일 목록 ==="
           ls -lh build/libs/
-      
-      - name: Get Jar file name
-        id: get_jar_name
-        run: echo "jar_name=$(basename build/libs/*[!plain].jar)" >> $GITHUB_OUTPUT
 
-      # 빌드된 JAR 파일을 GitHub Artifact에 업로드
-      - name: Upload JAR
+      # ✨ [수정] JAR 파일 대신 build 폴더 전체를 아티팩트로 업로드
+      - name: Upload build folder
         uses: actions/upload-artifact@v4
         with:
-          name: wishpool-jar
-          path: build/libs/*.jar
+          name: wishpool-build
+          path: build/
 
   # Job 2: Docker 이미지 빌드 및 푸시
   build-and-push:
@@ -60,16 +56,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 이전 잡에서 업로드한 JAR 파일을 다운로드
-      - name: Download JAR
+      # ✨ [수정] build 폴더 아티팩트를 다운로드
+      - name: Download build folder from build job
         uses: actions/download-artifact@v4
         with:
-          name: wishpool-jar
-          
-      - name: debug list workspace
-        run: |
-          echo "=== workspace tree ==="
-          ls -R .
+          name: wishpool-build
+          path: build/
           
       - name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v2'
