@@ -13,4 +13,4 @@ services:
       - DB_USERNAME=${DB_USER_PROD}
       - DB_PASSWORD=${DB_PASSWORD_PROD}
     ports:
-      - "8000:8000"
+      - "${HOST_PORT}:8000"
