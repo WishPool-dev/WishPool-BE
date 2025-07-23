@@ -5,7 +5,8 @@ on:
   push:
     branches:
       - main
-      
+  workflow_dispatch:
+
 # 2. 워크플로우에서 사용할 환경 변수
 env:
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
