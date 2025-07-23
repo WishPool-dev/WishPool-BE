@@ -111,7 +111,11 @@ jobs:
           script: |
             cd ~/wishpool/WishPool-BE
             chmod +x ./scripts/deploy.sh
+
+            git fetch origin
+            git reset --hard origin/main
             git pull
+            
             export DB_URL_PROD=${{ secrets.DB_URL_PROD }}
             export DB_USER_PROD=${{ secrets.DB_USER_PROD }}
             export DB_PROD_PASSWORD=${{ secrets.DB_PROD_PASSWORD }}
