@@ -66,7 +66,12 @@ jobs:
         with:
           name: wishpool-jar
           path: .
-
+          
+      - name: debug list workspace
+        run: |
+          echo "=== workspace tree ==="
+          ls -R .
+          
       - name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v2'
         with:
