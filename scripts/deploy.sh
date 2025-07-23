@@ -6,8 +6,12 @@ GREEN_PORT=8082
 NGINX_CONF="/etc/nginx/conf.d/service-url.inc"
 DOCKER_COMPOSE_CMD="/usr/local/bin/docker-compose"
 
+# ✨ [추가] GCP Artifact Registry에 대한 Docker 인증 설정
+echo ">>> Configuring Docker for GCR..."
+gcloud auth configure-docker ${GAR_LOCATION}-docker.pkg.dev
+
 # 👇 GitHub Actions로부터 전달받은 변수로 전체 이미지 경로를 생성합니다.
-IMAGE_FULL_PATH="${IMAGE_REPO_URL}/${IMAGE_NAME}:${IMAGE_TAG}"
+IMAGE_FULL_PATH="${IMAGE_REPO_URL}/${IMAGE_NAME}/${IMAGE_NAME}:${IMAGE_TAG}" # 경로 수정
 export IMAGE_FULL_PATH # docker-compose.app.yml이 이 변수를 사용합니다.
 
 # 2. 현재 실행 중인 포트 확인
