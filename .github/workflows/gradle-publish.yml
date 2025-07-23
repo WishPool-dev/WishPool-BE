@@ -117,6 +117,7 @@ jobs:
             
             chmod +x ./scripts/deploy.sh
 
+            export GAR_LOCATION=${{ env.GAR_LOCATION }}
             export DB_URL_PROD=${{ secrets.DB_URL_PROD }}
             export DB_USER_PROD=${{ secrets.DB_USER_PROD }}
             export DB_PROD_PASSWORD=${{ secrets.DB_PROD_PASSWORD }}
