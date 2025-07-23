@@ -78,7 +78,16 @@ jobs:
 
       - name: Set up Docker credential for GAR
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
-
+        
+      - name: Check Variables
+        run: |
+          echo "--- Variable Check ---"
+          echo "GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}"
+          echo "GAR_LOCATION: ${{ env.GAR_LOCATION }}"
+          echo "IMAGE_NAME: ${{ env.IMAGE_NAME }}"
+          echo "Full Tag Path: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "----------------------"
+          
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
