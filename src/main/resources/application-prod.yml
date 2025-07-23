@@ -1,0 +1,49 @@
+spring:
+  # --- 데이터베이스 설정 ---
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL_PROD}
+    username: ${DB_USER_PROD}
+    password: ${DB_PASSWORD_PROD}
+
+  # --- JPA 설정 ---
+  jpa:
+    hibernate:
+      ddl-auto: update # 운영 환경에서는 보통 validate나 none으로 변경하는 것을 권장
+
+  # --- OAuth2 설정 ---
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${OAUTH2_KAKAO}
+            authorization-grant-type: authorization_code
+            redirect-uri: ${OAUTH2_REDIRECT_URL_PROD}
+            scope:
+              - profile_nickname
+              - account_email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+  # --- JWT 설정 ---
+  jwt:
+    secret-key: ${JWT_SECRET}
+    access-token-expiration: 86400000
+
+  # --- GCP 설정 ---
+  cloud:
+    gcp:
+      project-id: ${GCP_PROJECT_ID}
+      credentials:
+        location: ${GCP_CREDENTIALS}
+      storage:
+        bucket: ${GCP_BUCKET}
+
+# --- 서버 포트 설정 ---
+server:
+  port: 8000
