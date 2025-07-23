@@ -37,6 +37,10 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
+      # 👇 디버깅을 위해 이 단계를 추가합니다.
+      - name: List all files after build
+        run: ls -R
+        
       # GCP 인증
       - name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v2'
