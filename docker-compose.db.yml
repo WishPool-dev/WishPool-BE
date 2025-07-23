@@ -13,5 +13,12 @@ services:
       - ${DB_PROD_PORT}
     volumes:
       - wishpool-db-data:/var/lib/mysql
+    networks:
+      - wishpool-net
+
 volumes:
   wishpool-db-data:
+
+networks:
+  wishpool-net:
+    name: wishpool-net # 네트워크 이름 지정
