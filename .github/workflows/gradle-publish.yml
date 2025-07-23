@@ -65,7 +65,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: wishpool-jar
-          path: build/libs/
+          path: .
 
       - name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v2'
