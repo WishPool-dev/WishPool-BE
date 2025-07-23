@@ -29,9 +29,12 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Build with Gradle
-        run: ./gradlew build -x test
+          
+      - name: Gradle 빌드
+        run: |
+          ./gradlew build -x test
+          echo "=== build/libs 디렉토리 파일 목록 ==="
+          ls -lh build/libs/
       
       - name: Get Jar file name
         id: get_jar_name
@@ -62,7 +65,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: wishpool-jar
-          path: build/libs/
+          path: build/libs/*.jar
 
       - name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v2'
