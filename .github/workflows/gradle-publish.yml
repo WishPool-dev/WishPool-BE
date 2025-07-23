@@ -1,64 +1,83 @@
 name: wishpool CICD
 
-# 1. 워크플로우 실행 조건
 on:
   push:
     branches:
       - main
   workflow_dispatch:
 
-# 2. 워크플로우에서 사용할 환경 변수
 env:
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GAR_LOCATION: asia-northeast3
   IMAGE_NAME: wishpool-app
 
 jobs:
-  # 3. 첫 번째 Job: jar 빌드 및 Docker 이미지 푸시
-  build-and-push:
-    name: Build and Push Docker Image
+  # Job 1: Gradle로 JAR 파일 빌드
+  build-jar:
+    name: Build JAR with Gradle
     runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+    
+    outputs:
+      jar_file_name: ${{ steps.get_jar_name.outputs.jar_name }}
 
     steps:
-      # 소스 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 👇 1. JDK 17 설정 단계 추가
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 👇 2. Gradle 빌드 실행 단계 추가
       - name: Build with Gradle
         run: ./gradlew build -x test
+      
+      - name: Get Jar file name
+        id: get_jar_name
+        run: echo "jar_name=$(basename build/libs/*[!plain].jar)" >> $GITHUB_OUTPUT
 
-      # 👇 디버깅을 위해 이 단계를 추가합니다.
-      - name: List all files after build
-        run: ls -R
-        
-      # GCP 인증
+      # 빌드된 JAR 파일을 GitHub Artifact에 업로드
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: wishpool-jar
+          path: build/libs/
+
+  # Job 2: Docker 이미지 빌드 및 푸시
+  build-and-push:
+    name: Build and Push Docker Image
+    needs: build-jar # build-jar 잡이 성공해야 실행됨
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 이전 잡에서 업로드한 JAR 파일을 다운로드
+      - name: Download JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: wishpool-jar
+          path: build/libs/
+
       - name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-      # Artifact Registry에 대한 Docker 인증 설정
       - name: Set up Docker credential for GAR
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
 
-      # Docker 이미지 빌드 및 Artifact Registry에 푸시
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-
+          
   # GCP 인스턴스 배포 Job은 이전과 동일합니다.
   deploy-to-instance:
     name: GCP 배포
