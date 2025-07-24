@@ -42,6 +42,8 @@ spring:
   cloud:
     gcp:
       project-id: "${GCP_PROJECT_ID}"
+      credentials:
+        location: "${GCP_CREDENTIALS_LOCATION}"
       storage:
         bucket: "${GCP_BUCKET}"
 
