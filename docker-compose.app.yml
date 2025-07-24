@@ -11,23 +11,23 @@ services:
 
       # --- 데이터베이스 ---
       # Spring Boot가 인식하는 전체 yml 속성 이름으로 설정
-      - spring.datasource.url=${DB_URL_PROD}
-      - spring.datasource.username=${DB_USER_PROD}
-      - spring.datasource.password=${DB_PROD_PASSWORD}
+      - DB_URL_PROD=${DB_URL_PROD}
+      - DB_USER_PROD=${DB_USER_PROD}
+      - DB_PROD_PASSWORD=${DB_PROD_PASSWORD}
 
       # --- OAuth2 ---
       # [수정] yml의 전체 경로를 변수명으로 사용
-      - spring.security.oauth2.client.registration.kakao.client-id=${OAUTH2_KAKAO}
-      - spring.security.oauth2.client.registration.kakao.redirect-uri=${OAUTH2_REDIRECT_URL_PROD}
+      - OAUTH2_KAKAO=${OAUTH2_KAKAO}
+      - OAUTH2_REDIRECT_URL_PROD=${OAUTH2_REDIRECT_URL_PROD}
 
       # --- JWT ---
       # [수정] yml의 전체 경로를 변수명으로 사용
-      - spring.jwt.secret-key=${JWT_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
 
       # --- GCP ---
       # [수정] yml의 전체 경로를 변수명으로 사용
-      - spring.cloud.gcp.project-id=${GCP_PROJECT_ID}
-      - spring.cloud.gcp.storage.bucket=${GCP_BUCKET}
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID}
+      - GCP_BUCKET=${GCP_BUCKET}
     ports:
       - "${HOST_PORT}:8000"
     networks:

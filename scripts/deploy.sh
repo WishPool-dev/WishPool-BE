@@ -29,7 +29,17 @@ else
   OLD_PORT=${GREEN_PORT}
   echo ">>> New service port: ${TARGET_PORT}"
 fi
+# DB 접속 정보
+export DB_URL_PROD="${YOUR_JDBC_URL}"
+export DB_USER_PROD="${YOUR_DB_USERNAME}"
+export DB_PROD_PASSWORD="${YOUR_DB_PASSWORD}"
 
+# OAuth2, JWT, GCP 등도 동일하게…
+export OAUTH2_KAKAO="${OAUTH2_KAKAO}"
+export OAUTH2_REDIRECT_URL_PROD="${OAUTH2_REDIRECT_URL_PROD}"
+export JWT_SECRET="${JWT_SECRET}"
+export GCP_PROJECT_ID="${GCP_PROJECT_ID}"
+export GCP_BUCKET="${GCP_BUCKET}"
 # 4. 새로운 버전(Green)의 Docker 이미지 다운로드 및 컨테이너 실행
 export HOST_PORT=${TARGET_PORT}
 ${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml pull
