@@ -66,8 +66,8 @@ echo ">>> Deployment failed."
 echo ">>> Printing logs from failed container..."
 ${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml logs --tail="100"
 
-## 실패한 컨테이너와 네트워크 정리
-#${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml down
+# 실패한 컨테이너와 네트워크 정리
+${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml down
 
 # 실패 코드로 스크립트 종료
 exit 1
