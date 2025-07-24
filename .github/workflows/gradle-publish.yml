@@ -102,16 +102,18 @@ jobs:
           username: ${{ secrets.GCP_SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # 1. 프로젝트 디렉토리로 이동
             cd ~/wishpool/WishPool-BE
 
+            # 2. 최신 코드 가져오기
             git fetch origin
             git reset --hard origin/main
             git pull
             
+            # 3. 배포 스크립트에 실행 권한 부여
             chmod +x ./scripts/deploy.sh
 
-            # 4. ✨ [핵심] 애플리케이션 전용 .env.app 파일 생성
-            # 기존 .env 파일을 건드리지 않습니다.
+            # 4. .env.app 파일 생성 (이전과 동일)
             echo "IMAGE_FULL_PATH=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" > .env.app
             echo "DB_URL_PROD=${{ secrets.DB_URL_PROD }}" >> .env.app
             echo "DB_USER_PROD=${{ secrets.DB_USER_PROD }}" >> .env.app
@@ -122,7 +124,5 @@ jobs:
             echo "GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" >> .env.app
             echo "GCP_BUCKET=${{ secrets.GCP_BUCKET }}" >> .env.app
             
-            # deploy.sh 스크립트 자체에서 필요한 변수는 계속 export 합니다.
-            export GAR_LOCATION=${{ env.GAR_LOCATION }}
-    
-            ./scripts/deploy.sh
+            # 5. ✨ [핵심] deploy.sh 스크립트에 GAR_LOCATION과 .env.app 파일 경로를 인자로 전달
+            ./scripts/deploy.sh "${{ env.GAR_LOCATION }}" "./.env.app"
