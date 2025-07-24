@@ -5,48 +5,55 @@ echo "======================================="
 echo "        STARTING DEPLOYMENT"
 echo "======================================="
 
-# ✨ [핵심] 스크립트에 전달된 인자(Argument)가 비어있는지 확인합니다.
 if [ -z "$1" ] || [ -z "$2" ]; then
     echo "FATAL ERROR: Missing arguments."
     echo "Usage: ./deploy.sh <GAR_LOCATION> <ENV_FILE_PATH>"
     exit 1
 fi
 
-# ✨ 전달받은 인자를 변수에 할당합니다.
 GAR_LOCATION=$1
 APP_ENV_FILE=$2
 
 echo ">> GAR_LOCATION received: ${GAR_LOCATION}"
 echo ">> ENV_FILE_PATH received: ${APP_ENV_FILE}"
 
-# ✨ 전달받은 경로에 파일이 실제로 있는지 다시 한번 확인합니다.
 if [ ! -f "${APP_ENV_FILE}" ]; then
-    echo "FATAL ERROR: Environment file not found at specified path: ${APP_ENV_FILE}"
+    echo "FATAL ERROR: Environment file not found at: ${APP_ENV_FILE}"
     exit 1
 fi
-
-echo ">> Environment file confirmed. Proceeding..."
 echo "---------------------------------------"
 
 
-# 1. 변수 설정 (기존과 동일)
+# ✨ [핵심] 1. 공유 Docker 네트워크 생성 및 확인
+NETWORK_NAME="wishpool-net"
+if [ -z $(docker network ls --filter name=^${NETWORK_NAME}$ --format="{{ .Name }}") ] ; then
+    echo ">>> Network '${NETWORK_NAME}' not found. Creating network..."
+    docker network create ${NETWORK_NAME}
+    echo ">>> Network '${NETWORK_NAME}' created successfully."
+else
+    echo ">>> Network '${NETWORK_NAME}' already exists."
+fi
+echo "---------------------------------------"
+
+
+# 2. 변수 설정
 BLUE_PORT=8081
 GREEN_PORT=8082
 NGINX_CONF="/etc/nginx/conf.d/service-url.inc"
 DOCKER_COMPOSE_CMD="/usr/local/bin/docker-compose"
 
 
-# 2. GCP Artifact Registry Docker 인증
+# 3. GCP Artifact Registry Docker 인증
 echo ">>> Configuring Docker for GCR..."
 gcloud auth configure-docker ${GAR_LOCATION}-docker.pkg.dev
 
 
-# 3. 현재 실행 중인 포트 확인
+# 4. 현재 실행 중인 포트 확인
 CURRENT_PORT=$(sudo cat ${NGINX_CONF} | grep -Po '[0-9]+' | tail -1)
 echo ">>> Current service port: ${CURRENT_PORT}"
 
 
-# 4. 새로운 버전(Green)을 띄울 포트 결정
+# 5. 새로운 버전(Green)을 띄울 포트 결정
 if [ "${CURRENT_PORT}" -eq ${BLUE_PORT} ]; then
   TARGET_PORT=${GREEN_PORT}
   OLD_PORT=${BLUE_PORT}
@@ -57,10 +64,9 @@ fi
 echo ">>> New service will be deployed to port ${TARGET_PORT}"
 
 
-# 5. 새로운 버전(Green)의 Docker 이미지 다운로드 및 컨테이너 실행
+# 6. 새로운 버전(Green)의 Docker 이미지 다운로드 및 컨테이너 실행
 export HOST_PORT=${TARGET_PORT}
 
-# ✨ [핵심] docker-compose 명령어에서 전달받은 $APP_ENV_FILE 변수를 사용합니다.
 echo ">>> Pulling new docker image..."
 ${DOCKER_COMPOSE_CMD} --env-file "${APP_ENV_FILE}" -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml pull
 
@@ -68,7 +74,7 @@ echo ">>> Starting new container..."
 ${DOCKER_COMPOSE_CMD} --env-file "${APP_ENV_FILE}" -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml up -d
 
 
-# 6. 헬스 체크
+# 7. 헬스 체크
 echo ">>> Health check started on port ${TARGET_PORT}..."
 sleep 20
 for i in {1..20}; do
@@ -88,7 +94,7 @@ for i in {1..20}; do
 done
 
 
-# 7. 헬스 체크 최종 실패 시
+# 8. 헬스 체크 최종 실패 시
 echo ">>> Deployment failed. Health check did not pass."
 echo ">>> Printing logs from failed container..."
 ${DOCKER_COMPOSE_CMD} --env-file "${APP_ENV_FILE}" -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml logs --tail="200"
