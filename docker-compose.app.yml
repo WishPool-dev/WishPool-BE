@@ -15,6 +15,8 @@ services:
     - spring.jwt.secret-key=${JWT_SECRET}
     - spring.cloud.gcp.project-id=${GCP_PROJECT_ID}
     - spring.cloud.gcp.storage.bucket=${GCP_BUCKET}
+    - SPRING_CLOUD_GCP_CREDENTIALS_LOCATION=${GCP_CREDENTIALS_LOCATION}
+
     ports:
       - "${HOST_PORT}:8000"
     networks:
