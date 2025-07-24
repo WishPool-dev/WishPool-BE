@@ -117,5 +117,12 @@ jobs:
             export IMAGE_REPO_URL=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}
             export IMAGE_NAME=${{ env.IMAGE_NAME }}
             export IMAGE_TAG=${{ github.sha }}
+
+            # --- application-prod.yml을 위한 추가 환경 변수 ---
+            export OAUTH2_KAKAO=${{ secrets.OAUTH2_KAKAO }}
+            export OAUTH2_REDIRECT_URL_PROD=${{ secrets.OAUTH2_REDIRECT_URL_PROD }}
+            export JWT_SECRET=${{ secrets.JWT_SECRET }}
+            export GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
+            export GCP_BUCKET=${{ secrets.GCP_BUCKET }}
     
             ./scripts/deploy.sh
