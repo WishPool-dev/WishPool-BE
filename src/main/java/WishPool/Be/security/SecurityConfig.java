@@ -49,6 +49,7 @@ public class SecurityConfig {
                 // 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         // OAuth2 로그인용 엔드포인트, 정적 리소스, 홈 등은 모두 허용
+                        .requestMatchers("/actuator/health/**").permitAll()
                         .requestMatchers(
                                 "/login",
                                 "/login/**",
@@ -62,8 +63,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml",
                                 "/swagger-resources/**",
-                                "/webjars/**",
-                                "/actuator/health"
+                                "/webjars/**"
                         ).permitAll()
                         // /api/** 는 인증 필요
                         .requestMatchers("/api/**").authenticated()
