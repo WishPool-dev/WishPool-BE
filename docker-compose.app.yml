@@ -5,7 +5,8 @@ services:
   wishpool-app:
     image: ${IMAGE_FULL_PATH}
     restart: always
-    environment:- SPRING_PROFILES_ACTIVE=prod
+    environment:
+    - SPRING_PROFILES_ACTIVE=prod
     - spring.datasource.url=${DB_URL_PROD}
     - spring.datasource.username=${DB_USER_PROD}
     - spring.datasource.password=${DB_PROD_PASSWORD}
