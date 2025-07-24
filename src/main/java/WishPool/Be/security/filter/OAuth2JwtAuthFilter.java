@@ -25,6 +25,22 @@ public class OAuth2JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+
+        // 로그인 시작/콜백, 헬스체크 등 필터를 적용하지 않을 경로 패턴
+        return path.startsWith("/login")
+                || path.startsWith("/oauth2/authorization/")
+                || path.startsWith("/login/oauth2/code/")
+                || path.startsWith("/actuator/health")
+                || path.startsWith("/actuator/health/")
+                // 필요하다면 swagger, static 리소스 등도 추가
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/api/test")
+                ;    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String atc = request.getHeader("Authorization");
         if (!StringUtils.hasText(atc) || !atc.startsWith("Bearer ")) {
