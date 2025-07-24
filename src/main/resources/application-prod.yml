@@ -9,7 +9,8 @@ spring:
   # --- JPA 설정 ---
   jpa:
     hibernate:
-      ddl-auto: update # 운영 환경에서는 보통 validate나 none으로 변경하는 것을 권장
+      ddl-auto: create # 운영 환경에서는 보통 validate나 none으로 변경하는 것을 권장
+    show-sql: true                # SQL 자체를 로그에 출력
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -50,3 +51,8 @@ spring:
 # --- 서버 포트 설정 ---
 server:
   port: 8000
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG                             # 실제 쿼리문 로그
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # 바인딩 값 로그
