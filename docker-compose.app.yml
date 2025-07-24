@@ -19,6 +19,9 @@ services:
       - "${HOST_PORT}:8000"
     networks:
       - wishpool-net
+    volumes:
+      # 호스트의 gcp-key.json 파일을 컨테이너 내부의 /app/gcp-key.json으로 연결
+      - ./gcp-key.json:/app/gcp-key.json
 
 networks:
   wishpool-net:
