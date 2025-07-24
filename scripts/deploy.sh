@@ -77,7 +77,7 @@ ${DOCKER_COMPOSE_CMD} --env-file "${APP_ENV_FILE}" -p wishpool-app-${TARGET_PORT
 # 7. 헬스 체크
 echo ">>> Health check started on port ${TARGET_PORT}..."
 sleep 20
-for i in {1..20}; do
+for i in {1..7}; do
   response_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:${TARGET_PORT}/actuator/health)
   if [ ${response_code} -eq 200 ] || [ ${response_code} -eq 401 ]; then
      echo ">>> Health check successful!"
@@ -89,7 +89,7 @@ for i in {1..20}; do
      echo ">>> Old container on port ${OLD_PORT} stopped."
      exit 0
    fi
-  echo ">>> Health check failed (status: ${response_code}). Retrying in 10 seconds... (${i}/20)"
+  echo ">>> Health check failed (status: ${response_code}). Retrying in 10 seconds... (${i}/7)"
   sleep 10
 done
 
