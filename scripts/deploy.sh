@@ -10,44 +10,32 @@ DOCKER_COMPOSE_CMD="/usr/local/bin/docker-compose"
 echo ">>> Configuring Docker for GCR..."
 gcloud auth configure-docker ${GAR_LOCATION}-docker.pkg.dev
 
-# 👇 GitHub Actions로부터 전달받은 변수로 전체 이미지 경로를 생성합니다.
-IMAGE_FULL_PATH="${IMAGE_REPO_URL}/${IMAGE_NAME}/${IMAGE_NAME}:${IMAGE_TAG}" # 경로 수정
-export IMAGE_FULL_PATH # docker-compose.app.yml이 이 변수를 사용합니다.
+# .env 파일은 워크플로우에서 이미 생성되었으므로 docker-compose가 자동으로 사용합니다.
 
 # 2. 현재 실행 중인 포트 확인
 CURRENT_PORT=$(sudo cat ${NGINX_CONF} | grep -Po '[0-9]+' | tail -1)
-
 echo ">>> Current service port: ${CURRENT_PORT}"
 
 # 3. 새로운 버전(Green)을 띄울 포트 결정
 if [ "${CURRENT_PORT}" -eq ${BLUE_PORT} ]; then
   TARGET_PORT=${GREEN_PORT}
   OLD_PORT=${BLUE_PORT}
-  echo ">>> New service port: ${TARGET_PORT}"
 else
   TARGET_PORT=${BLUE_PORT}
   OLD_PORT=${GREEN_PORT}
-  echo ">>> New service port: ${TARGET_PORT}"
 fi
-# DB 접속 정보
-export DB_URL_PROD="${YOUR_JDBC_URL}"
-export DB_USER_PROD="${YOUR_DB_USERNAME}"
-export DB_PROD_PASSWORD="${YOUR_DB_PASSWORD}"
+echo ">>> New service will be deployed to port ${TARGET_PORT}"
 
-# OAuth2, JWT, GCP 등도 동일하게…
-export OAUTH2_KAKAO="${OAUTH2_KAKAO}"
-export OAUTH2_REDIRECT_URL_PROD="${OAUTH2_REDIRECT_URL_PROD}"
-export JWT_SECRET="${JWT_SECRET}"
-export GCP_PROJECT_ID="${GCP_PROJECT_ID}"
-export GCP_BUCKET="${GCP_BUCKET}"
 # 4. 새로운 버전(Green)의 Docker 이미지 다운로드 및 컨테이너 실행
-export HOST_PORT=${TARGET_PORT}
+export HOST_PORT=${TARGET_PORT} # 포트 매핑을 위해 이 변수는 export 필요
+# docker-compose는 현재 디렉토리의 .env 파일을 자동으로 읽습니다.
 ${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml pull
 ${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml up -d
 
-# 5. 헬스 체크
+# 5. 헬스 체크 (시간과 횟수 증가)
 echo ">>> Health check started on port ${TARGET_PORT}..."
-for i in {1..10}; do
+sleep 20 # 애플리케이션 시작 대기 시간 증가
+for i in {1..20}; do
   response_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:${TARGET_PORT}/actuator/health)
 
   if [ ${response_code} -eq 200 ]; then
@@ -59,25 +47,23 @@ for i in {1..10}; do
     echo ">>> Traffic switched to port ${TARGET_PORT}."
 
     # 7. 기존 버전(Old) 컨테이너 종료
+    echo ">>> Stopping old container on port ${OLD_PORT}..."
     ${DOCKER_COMPOSE_CMD} -p wishpool-app-${OLD_PORT} -f docker-compose.app.yml down
     echo ">>> Old container on port ${OLD_PORT} stopped."
-
     exit 0
   fi
 
-  echo ">>> Health check failed. Retrying in 5 seconds... (${i}/10)"
-  sleep 5
+  echo ">>> Health check failed (status: ${response_code}). Retrying in 10 seconds... (${i}/20)"
+  sleep 10
 done
 
-# 8. 헬스 체크 최종 실패 시 (for 루프가 끝난 후)
-echo ">>> Deployment failed."
-
-# 실패한 컨테이너의 로그를 100줄 출력
+# 8. 헬스 체크 최종 실패 시
+echo ">>> Deployment failed. Health check did not pass."
 echo ">>> Printing logs from failed container..."
-${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml logs --tail="100"
+${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml logs --tail="200"
 
-# 실패한 컨테이너와 네트워크 정리
+# 실패한 컨테이너 정리
+echo ">>> Cleaning up failed deployment..."
 ${DOCKER_COMPOSE_CMD} -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml down
 
-# 실패 코드로 스크립트 종료
 exit 1

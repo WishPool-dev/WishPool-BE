@@ -5,21 +5,15 @@ services:
   wishpool-app:
     image: ${IMAGE_FULL_PATH}
     restart: always
-    environment:
-      # --- 공통 설정 ---
-      - SPRING_PROFILES_ACTIVE=prod
-      # — 데이터베이스
-      - SPRING_DATASOURCE_URL=${DB_URL_PROD}
-      - SPRING_DATASOURCE_USERNAME=${DB_USER_PROD}
-      - SPRING_DATASOURCE_PASSWORD=${DB_PROD_PASSWORD}
-      # — OAuth2 (Kakao)
-      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT_ID=${OAUTH2_KAKAO}
-      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_REDIRECT_URI=${OAUTH2_REDIRECT_URL_PROD}
-      # — JWT (application-prod.yml: jwt.secret-key 로 읽음)
-      - JWT_SECRET=${JWT_SECRET}
-      # — GCP
-      - SPRING_CLOUD_GCP_PROJECT_ID=${GCP_PROJECT_ID}
-      - SPRING_CLOUD_GCP_STORAGE_BUCKET=${GCP_BUCKET}
+    environment:- SPRING_PROFILES_ACTIVE=prod
+    - spring.datasource.url=${DB_URL_PROD}
+    - spring.datasource.username=${DB_USER_PROD}
+    - spring.datasource.password=${DB_PROD_PASSWORD}
+    - spring.security.oauth2.client.registration.kakao.client-id=${OAUTH2_KAKAO}
+    - spring.security.oauth2.client.registration.kakao.redirect-uri=${OAUTH2_REDIRECT_URL_PROD}
+    - spring.jwt.secret-key=${JWT_SECRET}
+    - spring.cloud.gcp.project-id=${GCP_PROJECT_ID}
+    - spring.cloud.gcp.storage.bucket=${GCP_BUCKET}
     ports:
       - "${HOST_PORT}:8000"
     networks:
