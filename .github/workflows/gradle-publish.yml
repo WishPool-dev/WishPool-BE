@@ -123,6 +123,7 @@ jobs:
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.app
             echo "GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" >> .env.app
             echo "GCP_BUCKET=${{ secrets.GCP_BUCKET }}" >> .env.app
-            
+            echo "GCP_CREDENTIALS_LOCATION=file:/app/gcp-key.json" >> .env.app
+
             # 5. ✨ [핵심] deploy.sh 스크립트에 GAR_LOCATION과 .env.app 파일 경로를 인자로 전달
             ./scripts/deploy.sh "${{ env.GAR_LOCATION }}" "./.env.app"
