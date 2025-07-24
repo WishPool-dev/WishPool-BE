@@ -2,9 +2,9 @@ spring:
   # --- 데이터베이스 설정 ---
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL_PROD}
-    username: ${DB_USER_PROD}
-    password: ${DB_PROD_PASSWORD}
+    url: "${DB_URL_PROD}"
+    username: "${DB_USER_PROD}"
+    password: "${DB_PROD_PASSWORD}"
 
   # --- JPA 설정 ---
   jpa:
@@ -20,9 +20,9 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${OAUTH2_KAKAO}
+            client-id: "${OAUTH2_KAKAO}"
             authorization-grant-type: authorization_code
-            redirect-uri: ${OAUTH2_REDIRECT_URL_PROD}
+            redirect-uri: "${OAUTH2_REDIRECT_URL_PROD}"
             scope:
               - profile_nickname
               - account_email
@@ -35,15 +35,15 @@ spring:
 
   # --- JWT 설정 ---
   jwt:
-    secret-key: ${JWT_SECRET}
+    secret-key: "${JWT_SECRET}"
     access-token-expiration: 86400000
 
   # --- GCP 설정 ---
   cloud:
     gcp:
-      project-id: ${GCP_PROJECT_ID}
+      project-id: "${GCP_PROJECT_ID}"
       storage:
-        bucket: ${GCP_BUCKET}
+        bucket: "${GCP_BUCKET}"
 
 # --- 서버 포트 설정 ---
 server:
