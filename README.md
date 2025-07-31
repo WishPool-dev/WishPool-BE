@@ -9,6 +9,8 @@ WishPool 백엔드 레포지토리입니다.
 - 📚 `docs:`: 문서 변경
 - 🚀 `perf:`: 성능 개선
 - 🔧 `chore:`: 잡일 변경 (빌드 도구 변경 등)
+- 🗑️ remove: 파일/코드 제거
+- ♻️ refactor: 코드 리팩토링
 
 ## Git Flow 및 브랜치 전략
 
