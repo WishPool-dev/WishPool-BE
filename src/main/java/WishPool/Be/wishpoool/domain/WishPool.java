@@ -53,7 +53,7 @@ public class WishPool extends BaseEntity {
                 .celebrant(dto.celebrant())
                 .birthDay(dto.birthDay())
                 .description(dto.description())
-                .imageKey(dto.imageURL())
+                .imageKey(dto.imageKey())
                 .endDate(dto.endDate())
                 .shareIdentifier(shareIdentifier)
                 .build();

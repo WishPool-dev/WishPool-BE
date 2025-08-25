@@ -17,7 +17,7 @@ public record CreateWishPoolRequestDto(
         @NotBlank(message = "위시풀에 대한 설명을 입력해주세요.")
         String description,
 
-        String imageURL,
+        String imageKey,
 
         @NotNull(message = "마감일을 등록해주세요.")
         @FutureOrPresent(message = "마감 날짜는 오늘 날짜 이후여야 합니다.")
