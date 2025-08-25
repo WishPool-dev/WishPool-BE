@@ -61,6 +61,7 @@ public class WishPool extends BaseEntity {
                 .imageKey(dto.imageKey())
                 .participantEndDate(dto.endDate())
                 .shareIdentifier(shareIdentifier)
+                .wishPoolStatus(WishPoolStatus.ACTIVE)
                 .build();
         Participant organizer = Participant.from(wishPool, owner);
         wishPool.addParticipant(organizer);
