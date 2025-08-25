@@ -33,8 +33,13 @@ public class WishPool extends BaseEntity {
     @Column(name = "image_key")
     private String imageKey;
 
-    @Column(name = "end_date")
-    private LocalDate endDate;
+    // 참여자 마감일
+    @Column(name = "participant_end_date")
+    private LocalDate participantEndDate;
+
+    // 생일자 픽 마감일
+    @Column(name = "celebrant_pick_end_date")
+    private LocalDate celebrantPickEndDate;
 
     @Column(name = "wishpool_status")
     @Enumerated(EnumType.STRING)
@@ -54,7 +59,7 @@ public class WishPool extends BaseEntity {
                 .birthDay(dto.birthDay())
                 .description(dto.description())
                 .imageKey(dto.imageKey())
-                .endDate(dto.endDate())
+                .participantEndDate(dto.endDate())
                 .shareIdentifier(shareIdentifier)
                 .build();
         Participant organizer = Participant.from(wishPool, owner);
