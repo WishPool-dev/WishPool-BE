@@ -1,10 +1,14 @@
-package WishPool.Be.user.entity;
+package WishPool.Be.user.domain;
 
+import WishPool.Be.wishpoool.domain.Participant;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "users")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,6 +35,9 @@ public class User {
     @Column(name = "provider_id", nullable = false)
     private String providerId;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participant> participants = new ArrayList<>();
+
     public static User createUser(String name, String email, Role role, String provider, String providerId) {
         User user = new User();
         user.email = email;
@@ -40,4 +47,5 @@ public class User {
         user.providerId = providerId;
         return user;
     }
+
 }
