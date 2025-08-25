@@ -1,7 +1,7 @@
 package WishPool.Be.security.filter;
 
 import WishPool.Be.security.service.SecurityUserDto;
-import WishPool.Be.util.jwt.JwtUtil;
+import WishPool.Be.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,18 +27,18 @@ public class OAuth2JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-
         // 로그인 시작/콜백, 헬스체크 등 필터를 적용하지 않을 경로 패턴
         return path.startsWith("/login")
                 || path.startsWith("/oauth2/authorization/")
                 || path.startsWith("/login/oauth2/code/")
                 || path.startsWith("/actuator/health")
                 || path.startsWith("/actuator/health/")
+                || path.startsWith("/api/images/upload")
                 // 필요하다면 swagger, static 리소스 등도 추가
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/v3/api-docs")
-                || path.startsWith("/api/test")
-                ;    }
+                || path.startsWith("/api/test");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -55,6 +55,7 @@ public class OAuth2JwtAuthFilter extends OncePerRequestFilter {
             String name = jwtUtil.getName(accessToken);
             // SecurityContext에 등록할 User 객체를 만들어준다.
             SecurityUserDto userDto = SecurityUserDto.builder()
+                    .userId(Long.valueOf(userId))
                     .role(role)
                     .name(name)
                     .build();
