@@ -51,12 +51,12 @@ public class SecurityConfig {
                         // OAuth2 로그인용 엔드포인트, 정적 리소스, 홈 등은 모두 허용
                         .requestMatchers("/actuator/health/**").permitAll()
                         .requestMatchers(
-                                "/api/test",
                                 "/login",
                                 "/login/**",
                                 "/oauth2/authorization/**",
                                 "/login/oauth2/code/**",
                                 "/css/**", "/js/**",
+                                "/api/images/upload",
                                 "/login-error",
                                 "/home",
                                 "/swagger-ui.html",
