@@ -1,6 +1,6 @@
 package WishPool.Be.security.service;
 
-import WishPool.Be.user.entity.User;
+import WishPool.Be.user.domain.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -10,10 +10,6 @@ import java.util.Map;
 
 @Getter
 public class CustomOAuth2User implements OAuth2User {
-    /**
-     * private final을 너무 자주 의존성 주입하는데 사용해서 아무렇지 않게 사용하려다 문제가 발생
-     * 이미 Loaduser에서 주입받은 User를 사용해서 값으로 사용하는 것이기 때문에 의존성 주입이 필요 없음
-     */
     private final User user;
     private final Map<String,Object> attributes;
     private final Collection<GrantedAuthority> authorities;
