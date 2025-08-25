@@ -1,4 +1,4 @@
-package WishPool.Be.gcs;
+package WishPool.Be.config;
 
 import java.io.IOException;
 import java.util.List;

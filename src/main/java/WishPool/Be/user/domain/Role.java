@@ -1,4 +1,4 @@
-package WishPool.Be.user.entity;
+package WishPool.Be.user.domain;
 
 public enum Role{
     ROLE_USER,ROLE_ADMIN

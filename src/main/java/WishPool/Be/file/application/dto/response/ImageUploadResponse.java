@@ -1,4 +1,4 @@
-package WishPool.Be.gcs.dto;
+package WishPool.Be.file.application.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

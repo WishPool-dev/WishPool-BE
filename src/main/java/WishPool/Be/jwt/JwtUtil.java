@@ -1,4 +1,4 @@
-package WishPool.Be.util.jwt;
+package WishPool.Be.jwt;
 
 import org.springframework.stereotype.Component;
 
