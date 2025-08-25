@@ -36,9 +36,8 @@ dependencies {
 	// Lombok
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
-
-	// 환경 변수 로딩 (dotenv)
-	implementation 'io.github.cdimascio:java-dotenv:5.1.1'
+	// validation 의존성 추가
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	testCompileOnly 'org.projectlombok:lombok:1.18.30'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
@@ -50,6 +49,9 @@ dependencies {
 	runtimeOnly   'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly   'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	implementation 'com.auth0:java-jwt:4.4.0'
+
+	// MetaData 날짜 조절
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
