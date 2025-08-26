@@ -49,6 +49,7 @@ public class WishPool extends BaseEntity {
     @Column(name = "share_identifier",unique = true)
     private String shareIdentifier;
 
+    // 나중에 생일자에게 전달할 링크
     @Column(name = "chosen_identifier",unique = true)
     private String chosenIdentifier;
 
@@ -66,7 +67,6 @@ public class WishPool extends BaseEntity {
                 .description(dto.description())
                 .imageKey(dto.imageKey())
                 .participantEndDate(dto.endDate())
-                .celebrantPickEndDate(dto.endDate().plusDays(7))
                 .shareIdentifier(shareIdentifier)
                 .wishPoolStatus(WishPoolStatus.OPEN)
                 .ownerName(owner.getName())
