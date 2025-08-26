@@ -32,4 +32,9 @@ public class ParticipantRepositoryAdapter implements ParticipantRepository{
     public Participant save(Participant participant) {
         return participantJpaRepository.save(participant);
     }
+
+    @Override
+    public Participant findParticipantByUserAndWishPool(Long userId, Long wishpoolId) {
+        return participantJpaRepository.findParticipantByUser_UserIdAndWishPool_WishPoolId(userId, wishpoolId);
+    }
 }
