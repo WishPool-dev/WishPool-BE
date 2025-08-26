@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorStatus {
     NOT_FOUND(HttpStatus.NOT_FOUND, "못찾겠다!!"),
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, ""),
+    WISHPOOL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 위시풀을 찾을 수 없습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다. 로그인 후 이용해주세요.");
     private final HttpStatus
             httpStatus;
