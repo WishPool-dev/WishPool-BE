@@ -7,13 +7,16 @@ import WishPool.Be.wishpoool.application.dto.response.gift.BirthdayGiftsViewResp
 import WishPool.Be.wishpoool.application.dto.response.gift.GiftListResponseDto;
 import WishPool.Be.wishpoool.application.query.GiftListQueryService;
 import WishPool.Be.wishpoool.application.query.WishPoolQueryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-
+@Tag(name = "위시풀 API", description = "위시풀 조회, 참여, 선물 확인 등 관련 모든 기능을 제공합니다.")
 @RestController
 @RequestMapping("/wishpools")
 @RequiredArgsConstructor
@@ -22,13 +25,14 @@ public class WishPoolController {
     private final WishPoolCommandService wishPoolCommandService;
     private final GiftListQueryService giftListQueryService;
 
-    // 링크타고 게스트가 조회
+    @Operation(summary = "게스트용 위시풀 정보 조회", description = "공유 링크 식별자를 통해 게스트가 위시풀의 기본 정보를 조회합니다.")
     @GetMapping("/{shareIdentifier}")
-    public ResponseEntity<WishPoolGuestInfoResponseDto> getWishPoolGuestInfo(@PathVariable String shareIdentifier){
+    public ResponseEntity<WishPoolGuestInfoResponseDto> getWishPoolGuestInfo(
+            @Parameter(description = "위시풀 공유 식별자", example = "a1b2c3d4e5") @PathVariable String shareIdentifier){
         return ResponseEntity.ok().body(wishPoolQueryService.getGuestInfo(shareIdentifier));
     }
 
-    // 게스트의 위시풀 참여
+    @Operation(summary = "게스트 위시풀 참여 및 선물 등록", description = "게스트가 위시풀에 참여하며 이름과 선물 정보를 등록합니다.")
     @PostMapping("/guests")
     public ResponseEntity<Long> joinWishPoolWithGuest(@RequestBody CreateGiftListRequestDto dto){
         Long createdWishpoolId = wishPoolCommandService.createGiftListForGuest(dto);
@@ -36,15 +40,17 @@ public class WishPoolController {
         return ResponseEntity.created(uri).body(createdWishpoolId);
     }
 
-    // 선물 리스트 확인
+    @Operation(summary = "등록된 선물 리스트 전체 조회", description = "특정 위시풀 ID에 해당하는 모든 선물 목록을 조회합니다.")
     @GetMapping("/gifts/{wishpoolId}")
-    public ResponseEntity<List<GiftListResponseDto>> getGiftLists(@PathVariable Long wishpoolId){
+    public ResponseEntity<List<GiftListResponseDto>> getGiftLists(
+            @Parameter(description = "조회할 위시풀의 ID", example = "1") @PathVariable Long wishpoolId){
         return ResponseEntity.ok().body(giftListQueryService.getAllGifts(wishpoolId));
     }
 
-    // 생일자가 링크로 선물이랑 문구 받아보기
+    @Operation(summary = "생일자 본인의 선물 리스트 조회", description = "생일자가 고유 식별자를 통해 등록된 선물과 메시지를 확인합니다.")
     @GetMapping("/celebrant/{chosenIdentifier}")
-    public ResponseEntity<BirthdayGiftsViewResponseDto> joinWishPoolWithGuest(@PathVariable String chosenIdentifier){
+    public ResponseEntity<BirthdayGiftsViewResponseDto> getGiftsForBirthdayOwner(
+            @Parameter(description = "생일자 확인용 식별자", example = "f6g7h8i9j0") @PathVariable String chosenIdentifier){
         return ResponseEntity.ok().body(giftListQueryService.getGiftsForBirthdayOwner(chosenIdentifier));
     }
 }
