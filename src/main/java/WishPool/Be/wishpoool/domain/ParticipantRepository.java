@@ -10,4 +10,6 @@ public interface ParticipantRepository {
     Participant findWishPoolOwner(Long wishpoolId, ParticipantRole participantRole);
 
     Participant save(Participant participant);
+
+    Participant findParticipantByUserAndWishPool(Long userId, Long wishpoolId);
 }
