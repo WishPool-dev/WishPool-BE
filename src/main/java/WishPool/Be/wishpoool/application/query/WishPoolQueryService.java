@@ -63,8 +63,8 @@ public class WishPoolQueryService {
     // 날짜 계산해주는 헬퍼 메소드
     private int calculateEndDate(WishPool wishPool){
         WishPoolStatus wishPoolStatus = wishPool.getWishPoolStatus();
-        // 종료되거나 삭제된 위시풀은 마감일 0
-        if(wishPoolStatus == WishPoolStatus.COMPLETED){
+        // 종료되거나 대기중인 위시풀은 마감일 0
+        if(wishPoolStatus == WishPoolStatus.COMPLETED || wishPoolStatus == WishPoolStatus.PENDING){
             return 0;
         }
         // 참여 마감일
