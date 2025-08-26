@@ -1,0 +1,17 @@
+package WishPool.Be.wishpoool.application.dto.response;
+
+import WishPool.Be.wishpoool.domain.WishPool;
+import java.time.LocalDate;
+
+// URL 타고 조회하는 용도
+public record WishPoolGuestInfoResponseDto(
+        String owner,
+        String celebrant,
+        LocalDate endDate,
+        String description,
+        Long wishpoolId
+        ) {
+    public WishPoolGuestInfoResponseDto(WishPool wishPool){
+        this(wishPool.getOwnerName(), wishPool.getCelebrant(), wishPool.getParticipantEndDate(), wishPool.getDescription(), wishPool.getWishPoolId());
+    }
+}
