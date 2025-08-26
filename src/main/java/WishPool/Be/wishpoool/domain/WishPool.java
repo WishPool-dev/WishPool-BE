@@ -1,5 +1,7 @@
 package WishPool.Be.wishpoool.domain;
 
+import WishPool.Be.global.exception.business.BusinessException;
+import WishPool.Be.global.exception.business.ErrorStatus;
 import WishPool.Be.wishpoool.application.dto.request.CreateGiftListRequestDto;
 import WishPool.Be.user.domain.User;
 import WishPool.Be.util.BaseEntity;
@@ -37,7 +39,7 @@ public class WishPool extends BaseEntity {
     @Column(name = "participant_end_date")
     private LocalDate participantEndDate;
 
-    // 생일자 픽 마감일 + 자동으로 엔딩 날짜에 7일 추가
+    // 생일자 픽 마감일
     @Column(name = "celebrant_pick_end_date")
     private LocalDate celebrantPickEndDate;
 
@@ -76,10 +78,27 @@ public class WishPool extends BaseEntity {
         wishPool.addParticipant(organizer);
         return wishPool;
     }
-    // 참여자 마감일이 변경 시 생일자 참가 날짜도 바뀜
-    public void changeEndDate(){}
-    // 참가자 날짜만도 바꿀 수 있음
-    public void changePickDate(){}
+
+    public String startGiftSelection(LocalDate pickDate) {
+        // 1. 상태 검증: PENDING 상태가 맞는지 스스로 확인
+        if (this.wishPoolStatus != WishPoolStatus.PENDING) {
+            throw new BusinessException(ErrorStatus.WISHPOOL_NOT_IN_PENDING_STATE);
+        }
+        // 2. 날짜 유효성 검증: 참여 마감일 이후인지 스스로 확인
+        if (pickDate.isBefore(this.participantEndDate)) {
+            throw new BusinessException(ErrorStatus.INVALID_PICK_END_DATE);
+        }
+        // 3. 상태 변경: 자신의 상태와 데이터를 직접 변경
+        this.celebrantPickEndDate = pickDate;
+        this.wishPoolStatus = WishPoolStatus.WAITING;
+        // 4. 결과 반환
+        return this.chosenIdentifier;
+    }
+
+    // 스케줄러에서 PENDING으로 변경
+    public void changeStatusToPending(){
+        this.wishPoolStatus = WishPoolStatus.PENDING;
+    }
 
     // 위시풀에 비로그인 참여자 참가
     public Participant addGuest(CreateGiftListRequestDto dto){
