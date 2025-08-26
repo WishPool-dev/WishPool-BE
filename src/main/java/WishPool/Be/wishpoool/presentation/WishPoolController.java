@@ -29,9 +29,9 @@ public class WishPoolController {
 
     @PostMapping("/guests")
     public ResponseEntity<Long> joinWishPoolWithGuest(@RequestBody CreateGiftListRequestDto dto){
-        wishPoolCommandService.createGiftListForGuest(dto);
+        Long createdWishpoolId = wishPoolCommandService.createGiftListForGuest(dto);
         URI uri = URI.create("/wishpools/guests");
-        return ResponseEntity.created(uri).build();
+        return ResponseEntity.created(uri).body(createdWishpoolId);
     }
 
     @GetMapping("/gifts/{wishpoolId}")
