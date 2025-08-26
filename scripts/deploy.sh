@@ -74,23 +74,32 @@ echo ">>> Starting new container..."
 ${DOCKER_COMPOSE_CMD} --env-file "${APP_ENV_FILE}" -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml up -d
 
 
-# 7. 헬스 체크
+# 7. 헬스 체크 (수정된 버전)
 echo ">>> Health check started on port ${TARGET_PORT}..."
-sleep 20
-for i in {1..7}; do
+
+# 총 15번, 5초 간격으로 헬스 체크 시도 (최대 75초 대기)
+for i in {1..15}; do
+  echo ">>> [${i}/15] Checking health on http://localhost:${TARGET_PORT}/actuator/health..."
   response_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:${TARGET_PORT}/actuator/health)
+
+  # 200 (정상) 또는 401 (정상이지만 인증 필요) 상태 코드를 성공으로 간주
   if [ ${response_code} -eq 200 ] || [ ${response_code} -eq 401 ]; then
-     echo ">>> Health check successful!"
+     echo ">>> Health check successful! (Status: ${response_code})"
      echo "set \$service_url http://127.0.0.1:${TARGET_PORT};" | sudo tee ${NGINX_CONF}
+
+     echo ">>> Reloading NGINX to switch traffic..."
      sudo nginx -s reload
+
      echo ">>> Traffic switched to port ${TARGET_PORT}."
      echo ">>> Stopping old container on port ${OLD_PORT}..."
      ${DOCKER_COMPOSE_CMD} --env-file "${APP_ENV_FILE}" -p wishpool-app-${OLD_PORT} -f docker-compose.app.yml down
-     echo ">>> Old container on port ${OLD_PORT} stopped."
+
+     echo ">>> Deployment successful!"
      exit 0
    fi
-  echo ">>> Health check failed (status: ${response_code}). Retrying in 10 seconds... (${i}/7)"
-  sleep 10
+
+  echo ">>> Health check failed (Status: ${response_code}). Retrying in 5 seconds..."
+  sleep 5
 done
 
 
