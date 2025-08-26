@@ -3,6 +3,7 @@ package WishPool.Be.wishpoool.infra.persistence.jpa;
 import WishPool.Be.wishpoool.domain.Participant;
 import WishPool.Be.wishpoool.domain.ParticipantRepository;
 import WishPool.Be.wishpoool.domain.ParticipantRole;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,6 +14,6 @@ public interface ParticipantJpaRepository extends JpaRepository<Participant, Lon
     Long countByWishPool_WishPoolId(Long wishpoolId);
     // wishpool과 owner를 탐색
     Participant findParticipantByWishPool_WishPoolIdAndParticipantRole(Long wishpoolId, ParticipantRole participantRole);
-
-
+    @EntityGraph(attributePaths = {"wishPool"})
+    Participant findParticipantByUser_UserIdAndWishPool_WishPoolId(Long userId, Long wishpoolId);
 }
