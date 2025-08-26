@@ -4,6 +4,7 @@ import WishPool.Be.global.exception.business.BusinessException;
 import WishPool.Be.global.exception.business.ErrorResponse;
 import WishPool.Be.global.exception.business.ErrorStatus;
 import WishPool.Be.file.exception.GcsUploadException;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     // GCS 예외 처리
