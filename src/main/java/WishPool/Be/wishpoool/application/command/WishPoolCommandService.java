@@ -8,11 +8,15 @@ import WishPool.Be.user.domain.User;
 import WishPool.Be.user.domain.UserRepository;
 import WishPool.Be.util.IdentifierGenerator;
 import WishPool.Be.wishpoool.application.dto.request.CreateWishPoolRequestDto;
+import WishPool.Be.wishpoool.application.dto.response.CelebrantUrlResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.CreatedWishPoolResponseDto;
 import WishPool.Be.wishpoool.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -64,5 +68,28 @@ public class WishPoolCommandService {
         return wishPool.getWishPoolId();
     }
 
-    // 참여 마감일이 지난 후 상태 변경, 선물 선택일 날짜 지정(기본은 참가자 참여 + 7일)
+    // 참여 마감일이 지난 후 상태 변경, 선물 선택일 날짜 지정 (open -> pending -> waiting) 만약 사용자가 마감을 즉시 바꾸고 싶다면, 오늘 날짜로 바꾸거나 어제 날짜로 바꾸어야할듯
+    @Transactional(readOnly = false)
+    public CelebrantUrlResponseDto getChosenURL(Long wishpoolId, LocalDate pickDate, Long userId){
+        // 이렇게 사용자와 위시풀 ID 둘 다 아는게 제일 좋음, 깜빡했음
+        Participant participant = participantRepository.findParticipantByUserAndWishPool(userId, wishpoolId);
+        WishPool selected = participant.getWishPool();
+        // 상태 바꾸고 URL 전달
+        String chosenUrl = selected.startGiftSelection(pickDate);
+        return new CelebrantUrlResponseDto(wishpoolId, chosenUrl);
+    }
+
+    // 스케줄러로 마감되는 위시풀들 상태 수정하기
+    @Transactional(readOnly = false)
+    public void changeOpenWishPoolsToPending(LocalDate expiredDate) {
+        // 참여 마감일이 어제 날짜이고, 상태가 OPEN인 위시풀들을 모두 찾음
+        List<WishPool> expiredPools = wishPoolRepository.findAllByWishPoolStatusAndParticipantEndDate(
+                WishPoolStatus.OPEN,
+                expiredDate
+        );
+        // 상태를 PENDING으로 변경
+        expiredPools.forEach(WishPool::changeStatusToPending);
+        // TODO: 각 WishPool의 주최자에게 메시지 보내기 ?
+    }
+
 }
