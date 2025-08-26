@@ -2,6 +2,8 @@ package WishPool.Be.wishpoool.domain;
 
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface WishPoolRepository {
@@ -10,4 +12,6 @@ public interface WishPoolRepository {
     Optional<WishPool> findByShareIdentifier(String shareIdentifier);
 
     Optional<WishPool> findWithParticipantsAndGiftListById(Long wishpoolId);
+
+    List<WishPool> findAllByWishPoolStatusAndParticipantEndDate(WishPoolStatus open, LocalDate yesterday);
 }
