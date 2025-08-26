@@ -21,4 +21,14 @@ public class WishPoolRepositoryAdapter implements WishPoolRepository {
     public WishPool save(WishPool wishPool) {
         return wishPoolJpaRepository.save(wishPool);
     }
+
+    @Override
+    public Optional<WishPool> findWithParticipantsAndGiftListById(Long wishpoolId) {
+        return wishPoolJpaRepository.findWithParticipantsAndGiftListById(wishpoolId);
+    }
+
+    @Override
+    public Optional<WishPool> findByShareIdentifier(String shareIdentifier) {
+        return wishPoolJpaRepository.findWishPoolByShareIdentifier(shareIdentifier);
+    }
 }

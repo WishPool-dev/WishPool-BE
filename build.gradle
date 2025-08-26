@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.5.0'
+	id 'org.springframework.boot' version '3.5.0' // Spring Boot 3 버전 유지
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -13,6 +13,12 @@ java {
 	}
 }
 
+// ✨ Spring Cloud 버전 관리를 위한 설정 추가
+ext {
+	set('springCloudGcpVersion', "5.5.0")
+	set('springCloudVersion', "2023.0.3")
+}
+
 repositories {
 	mavenCentral()
 }
@@ -21,44 +27,42 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'mysql:mysql-connector-java:8.0.33'
+	runtimeOnly 'com.mysql:mysql-connector-j:8.0.33'
 
-	// Google Cloud Platform Storage(GCP Storage)
-	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
-	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.5.RELEASE'
+	// ✨ Google Cloud Platform Storage (버전 삭제 -> BOM이 관리)
+	implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
 
-	// Spring Security Core
+	// Spring Security & OAuth2
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	// OAuth2 Client (소셜 로그인)
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
 	// Lombok
-	compileOnly 'org.projectlombok:lombok:1.18.30'
-	annotationProcessor 'org.projectlombok:lombok:1.18.30'
-	// validation 의존성 추가
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 
-	testCompileOnly 'org.projectlombok:lombok:1.18.30'
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// JWT 생성·파싱용 JJWT
+	// JWT (jjwt로 통일)
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly   'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly   'io.jsonwebtoken:jjwt-jackson:0.11.5'
-	implementation 'com.auth0:java-jwt:4.4.0'
-
-	// MetaData 날짜 조절
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	// swagger
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
-	implementation "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0"
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
 	// 헬스체크
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
+
+// ✨ Spring Cloud BOM 추가
+dependencyManagement {
+	imports {
+		mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 tasks.named('test') {
