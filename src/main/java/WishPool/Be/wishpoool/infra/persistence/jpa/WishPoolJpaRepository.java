@@ -14,6 +14,7 @@ import java.util.Optional;
 
 public interface WishPoolJpaRepository extends JpaRepository<WishPool, Long> {
     public Optional<WishPool> findWishPoolByShareIdentifier(String shareIdentifier);
+    public Optional<WishPool> findWishPoolByChosenIdentifier(String chosenIdentifier);
 
     @Query("SELECT DISTINCT w FROM WishPool w " +
             "JOIN FETCH w.participants p " +

@@ -36,6 +36,11 @@ public class WishPoolRepositoryAdapter implements WishPoolRepository {
     }
 
     @Override
+    public Optional<WishPool> findByChosenIdentifier(String chosenIdentifier) {
+        return wishPoolJpaRepository.findWishPoolByChosenIdentifier(chosenIdentifier);
+    }
+
+    @Override
     public List<WishPool> findAllByWishPoolStatusAndParticipantEndDate(WishPoolStatus status, LocalDate today) {
         return wishPoolJpaRepository.findAllByWishPoolStatusAndParticipantEndDate(status, today);
     }

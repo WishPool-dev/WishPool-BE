@@ -10,6 +10,7 @@ public interface WishPoolRepository {
     Optional<WishPool> findById(Long id);
     WishPool save (WishPool wishPool);
     Optional<WishPool> findByShareIdentifier(String shareIdentifier);
+    Optional<WishPool> findByChosenIdentifier(String chosenIdentifier);
 
     Optional<WishPool> findWithParticipantsAndGiftListById(Long wishpoolId);
 
