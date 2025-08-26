@@ -94,6 +94,10 @@ for i in {1..15}; do
      echo ">>> Stopping old container on port ${OLD_PORT}..."
      ${DOCKER_COMPOSE_CMD} --env-file "${APP_ENV_FILE}" -p wishpool-app-${OLD_PORT} -f docker-compose.app.yml down
 
+     # ✨ [추가] 성공적으로 배포 완료 후, 사용하지 않는 모든 Docker 이미지를 정리합니다.
+     echo ">>> Cleaning up old docker images..."
+     docker image prune -a -f
+
      echo ">>> Deployment successful!"
      exit 0
    fi
@@ -109,4 +113,7 @@ echo ">>> Printing logs from failed container..."
 ${DOCKER_COMPOSE_CMD} --env-file "${APP_ENV_FILE}" -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml logs --tail="200"
 echo ">>> Cleaning up failed deployment..."
 ${DOCKER_COMPOSE_CMD} --env-file "${APP_ENV_FILE}" -p wishpool-app-${TARGET_PORT} -f docker-compose.app.yml down
+# ✨ [추가] 배포 실패 시에도, 방금 받은 이미지를 포함하여 사용하지 않는 이미지를 정리합니다.
+echo ">>> Cleaning up old docker images after failure..."
+docker image prune -a -f
 exit 1
