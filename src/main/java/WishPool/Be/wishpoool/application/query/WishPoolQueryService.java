@@ -9,7 +9,6 @@ import WishPool.Be.wishpoool.application.dto.response.WishPoolGuestInfoResponseD
 import WishPool.Be.wishpoool.application.dto.response.WishPoolResponseDto;
 import WishPool.Be.wishpoool.domain.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
