@@ -8,5 +8,6 @@ public enum WishPoolStatus {
      */
     OPEN,
     WAITING,
+    PENDING,
     COMPLETED
 }
