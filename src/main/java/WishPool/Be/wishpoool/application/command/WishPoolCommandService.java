@@ -11,6 +11,7 @@ import WishPool.Be.wishpoool.application.dto.request.CreateWishPoolRequestDto;
 import WishPool.Be.wishpoool.application.dto.response.CelebrantUrlResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.CreatedWishPoolResponseDto;
 import WishPool.Be.wishpoool.domain.*;
+import WishPool.Be.wishpoool.infra.persistence.jpa.GiftItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ public class WishPoolCommandService {
     private final WishPoolRepository wishPoolRepository;
     private final UserRepository userRepository;
     private final ParticipantRepository participantRepository;
+    private final GiftItemRepository giftItemRepository;
 
     // 위시풀 생성하기
     @Transactional
@@ -97,4 +99,13 @@ public class WishPoolCommandService {
         // TODO: 각 WishPool의 주최자에게 메시지 보내기 ?
     }
 
+    // 생일자의 선물 선택
+    @Transactional(readOnly = false)
+    public Long selectGiftsByCelebrant(Long wishpoolId, List<Long> giftItemIds){
+        WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
+        List<GiftItem> items = giftItemRepository.findAllByGiftItemIdIn(giftItemIds);
+        wishPool.createSelectedGift(items);
+        // wishPoolRepository.save(wishPool);
+        return wishpoolId;
+    }
 }
