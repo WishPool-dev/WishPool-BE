@@ -1,6 +1,6 @@
-package WishPool.Be.wishpoool.domain;
+package WishPool.Be.wishpoool.infra.persistence.jpa;
 
-import WishPool.Be.wishpoool.application.query.GiftListQueryService;
+import WishPool.Be.wishpoool.domain.GiftList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

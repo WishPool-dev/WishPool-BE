@@ -62,6 +62,10 @@ public class WishPool extends BaseEntity {
     @OneToMany(mappedBy = "wishPool", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "wishPool", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SelectedGift> selectedGifts = new ArrayList<>();
+
     public static WishPool createWishPool(CreateWishPoolRequestDto dto, User owner, String shareIdentifier, String chosenIdentifier){
         WishPool wishPool = WishPool.builder()
                 .celebrant(dto.celebrant())
@@ -95,9 +99,21 @@ public class WishPool extends BaseEntity {
         return this.chosenIdentifier;
     }
 
+    public void createSelectedGift(List<GiftItem> giftItems){
+        for (GiftItem giftItem : giftItems) {
+            SelectedGift selectedGift = SelectedGift.create(this, giftItem);
+            this.selectedGifts.add(selectedGift);
+        }
+    }
+
     // 스케줄러에서 PENDING으로 변경
     public void changeStatusToPending(){
         this.wishPoolStatus = WishPoolStatus.PENDING;
+    }
+
+    // 사용자 선물 선택 시 COMPLETED 변경
+    public void changeStatusToCompleted(){
+        this.wishPoolStatus = WishPoolStatus.COMPLETED;
     }
 
     // 위시풀에 비로그인 참여자 참가

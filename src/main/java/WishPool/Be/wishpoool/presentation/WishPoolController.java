@@ -53,4 +53,11 @@ public class WishPoolController {
             @Parameter(description = "생일자 확인용 식별자", example = "f6g7h8i9j0") @PathVariable String chosenIdentifier){
         return ResponseEntity.ok().body(giftListQueryService.getGiftsForBirthdayOwner(chosenIdentifier));
     }
+
+    @Operation(summary = "생일자 본인의 선물 리스트 선택", description = "생일자가 위시풀 리스트 중 마음에 드는 선물을 선택합니다.")
+    @PostMapping("/celebrant/{wishpoolId}")
+    public ResponseEntity<Long> selectGiftsByBirthdayOwner(
+            @Parameter(description = "생일자 확인용 식별자", example = "f6g7h8i9j0") @PathVariable Long wishpoolId, @RequestBody List<Long> giftItemIds){
+        return ResponseEntity.ok().body(wishPoolCommandService.selectGiftsByCelebrant(wishpoolId, giftItemIds));
+    }
 }

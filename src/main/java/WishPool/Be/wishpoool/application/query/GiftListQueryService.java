@@ -5,6 +5,7 @@ import WishPool.Be.global.exception.business.ErrorStatus;
 import WishPool.Be.wishpoool.application.dto.response.gift.BirthdayGiftsViewResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.gift.GiftListResponseDto;
 import WishPool.Be.wishpoool.domain.*;
+import WishPool.Be.wishpoool.infra.persistence.jpa.GiftListRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,7 @@ public class GiftListQueryService {
 
         // WishPool에서 필요한 추가 정보를 꺼내서 DTO를 완성!
         return BirthdayGiftsViewResponseDto.of(
+                wishPool.getWishPoolId(),
                 gifts,
                 wishPool.getCelebrant(), // 예시 필드
                 wishPool.getBirthDay(),
