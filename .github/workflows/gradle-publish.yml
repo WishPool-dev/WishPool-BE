@@ -121,6 +121,7 @@ jobs:
             echo "OAUTH2_KAKAO=${{ secrets.OAUTH2_KAKAO }}" >> .env.app
             echo "OAUTH2_REDIRECT_URL_PROD=${{ secrets.OAUTH2_REDIRECT_URL_PROD }}" >> .env.app
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.app
+            echo "DISCORD_WEBHOOK=${{ secrets.DISCORD_WEBHOOK }}" >> .env.app
             echo "GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" >> .env.app
             echo "GCP_BUCKET=${{ secrets.GCP_BUCKET }}" >> .env.app
             echo "GCP_CREDENTIALS_LOCATION=file:/app/gcp-key.json" >> .env.app
