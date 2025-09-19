@@ -37,7 +37,8 @@ public class OAuth2JwtAuthFilter extends OncePerRequestFilter {
                 // 필요하다면 swagger, static 리소스 등도 추가
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/v3/api-docs")
-                || path.startsWith("/api/test");
+                || path.startsWith("/api/test")
+                || path.startsWith("/contact");
     }
 
     @Override
