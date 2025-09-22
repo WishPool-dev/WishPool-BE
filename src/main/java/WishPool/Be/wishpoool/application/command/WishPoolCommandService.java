@@ -8,6 +8,7 @@ import WishPool.Be.user.domain.User;
 import WishPool.Be.user.domain.UserRepository;
 import WishPool.Be.util.IdentifierGenerator;
 import WishPool.Be.wishpoool.application.dto.request.CreateWishPoolRequestDto;
+import WishPool.Be.wishpoool.application.dto.request.WishpoolUpdateRequestDto;
 import WishPool.Be.wishpoool.application.dto.response.CelebrantUrlResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.CreatedWishPoolResponseDto;
 import WishPool.Be.wishpoool.domain.*;
@@ -108,4 +109,15 @@ public class WishPoolCommandService {
         // wishPoolRepository.save(wishPool);
         return wishpoolId;
     }
+
+    // 위시풀 수정하기
+    @Transactional(readOnly = false)
+    public Long updateWishPool(Long wishpoolId, Long userId, WishpoolUpdateRequestDto dto){
+        Participant participant = participantRepository.findParticipantByUserAndWishPool(wishpoolId, userId);
+        if (participant == null){
+            throw new  BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND);
+        }
+        return participant.getWishPool().updateWishpool();
+    }
+
 }

@@ -123,6 +123,11 @@ public class WishPool extends BaseEntity {
         return guest;
     }
 
+    // 위시풀 수정하기(
+    public Long updateWishpool(){
+        return 1L;
+    }
+
     // 연관관계 편의 메소드
     private void addParticipant(Participant participant){
         this.participants.add(participant);
