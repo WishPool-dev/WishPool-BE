@@ -42,7 +42,7 @@ public class WishPoolController {
 
     @Operation(summary = "등록된 선물 리스트 전체 조회", description = "특정 위시풀 ID에 해당하는 모든 선물 목록을 조회합니다.")
     @GetMapping("/gifts/{wishpoolId}")
-    public ResponseEntity<List<GiftListResponseDto>> getGiftLists(
+    public ResponseEntity<GiftListResponseDto> getGiftLists(
             @Parameter(description = "조회할 위시풀의 ID", example = "1") @PathVariable Long wishpoolId){
         return ResponseEntity.ok().body(giftListQueryService.getAllGifts(wishpoolId));
     }
