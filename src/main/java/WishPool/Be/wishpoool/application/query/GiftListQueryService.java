@@ -44,11 +44,9 @@ public class GiftListQueryService {
 
     // 기존 선물 확인 리스트들
     @Transactional(readOnly = true)
-    public List<GiftListResponseDto> getAllGifts(Long wishpoolId) {
+    public GiftListResponseDto getAllGifts(Long wishpoolId) {
         WishPool wishPool = findWishPoolWithAllGifts(wishpoolId);
-        return wishPool.getParticipants().stream()
-                .map(GiftListResponseDto::from)
-                .toList();
+        return GiftListResponseDto.from(wishPool);
     }
 
 
@@ -58,16 +56,14 @@ public class GiftListQueryService {
         WishPool found = wishPoolRepository.findByChosenIdentifier(chosenIdentifier).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
         WishPool wishPool = findWishPoolWithAllGifts(found.getWishPoolId());
 
-        // 선물 목록 DTO 리스트 생성
-        List<GiftListResponseDto> gifts = wishPool.getParticipants().stream()
-                .map(GiftListResponseDto::from)
-                .toList();
+        // 선물 목록 DTO 생성 로직 변경
+        GiftListResponseDto giftsDto = GiftListResponseDto.from(wishPool);
 
         // WishPool에서 필요한 추가 정보를 꺼내서 DTO를 완성!
         return BirthdayGiftsViewResponseDto.of(
                 wishPool.getWishPoolId(),
-                gifts,
-                wishPool.getCelebrant(), // 예시 필드
+                giftsDto.gifts(), // GiftListResponseDto에서 실제 선물 리스트만 전달
+                wishPool.getCelebrant(),
                 wishPool.getBirthDay(),
                 wishPool.getCelebrantPickEndDate()
         );

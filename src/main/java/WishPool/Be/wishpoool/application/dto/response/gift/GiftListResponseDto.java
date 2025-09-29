@@ -1,19 +1,31 @@
 package WishPool.Be.wishpoool.application.dto.response.gift;
 
-import WishPool.Be.wishpoool.application.dto.request.GiftItemDto;
-import WishPool.Be.wishpoool.domain.Participant;
+import WishPool.Be.wishpoool.domain.WishPool;
 
-import java.util.Collections;
 import java.util.List;
-
-public record GiftListResponseDto(String guest, List<GiftItemResponseDto> gifts) {
-    public static GiftListResponseDto from(Participant participant) {
-        // 참여자는 선물 리스트가 없을 수도 있으므로(null), 안전하게 처리
-        List<GiftItemResponseDto> items = participant.getGiftList() == null
-                ? Collections.emptyList() // 선물 리스트가 없으면 빈 리스트를,
-                : participant.getGiftList().getGiftItems().stream() // 있다면 그 안의 선물들을 DTO로 번역
-                .map(GiftItemResponseDto::from) // 위에서 만든 GiftItemDto.from() 사용
+public record GiftListResponseDto(
+        String celebrant,
+        Long participantCount,
+        List<GiftItemResponseDto> gifts
+) {
+    public static GiftListResponseDto from(WishPool wishPool) {
+        // 1. WishPool에서 celebrant와 participantCount를 가져옴
+        String celebrantName = wishPool.getCelebrant();
+        long count = wishPool.getParticipants().stream()
+                .filter(participant -> participant.getGiftList() != null)
+                .count();
+        // 2. 여러 Participant에 흩어져 있는 모든 GiftItem들을 하나의 리스트
+        List<GiftItemResponseDto> allGifts = wishPool.getParticipants().stream()
+                // 선물 목록이 없는 참여자는 제외
+                .filter(participant -> participant.getGiftList() != null && participant.getGiftList().getGiftItems() != null)
+                // flatMap을 사용해 각 참여자의 선물 리스트를 하나의 스트림으로 펼침
+                .flatMap(participant -> participant.getGiftList().getGiftItems().stream()
+                        // 각 GiftItem을 GiftItemResponseDto로 변환
+                        .map(giftItem -> GiftItemResponseDto.from(participant, giftItem))
+                )
                 .toList();
-        return new GiftListResponseDto(participant.getGuestName(), items);
+
+        // 3. 취합한 데이터로 DTO를 생성하여 반환
+        return new GiftListResponseDto(celebrantName, count, allGifts);
     }
 }
