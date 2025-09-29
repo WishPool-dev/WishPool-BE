@@ -38,7 +38,8 @@ public class WishPoolQueryService {
                             participant.getWishPool().getWishPoolId(),
                             participant.getWishPool().getWishPoolStatus(),
                             remainingDays,
-                            participant.getWishPool().getImageKey()
+                            participant.getWishPool().getImageKey(),
+                            participant.getWishPool().getCelebrant()
                     );
                 }
         ).toList();
