@@ -15,7 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Slf4j
@@ -23,23 +26,26 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtUtil jwtUtil;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    // ObjectMapper는 이제 필요 없으므로 삭제해도 됩니다.
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         User user = customOAuth2User.getUser();
-        // 토큰 생성
+
+        // 1. 토큰 생성 (기존과 동일)
         GeneratedToken token = jwtUtil.generateToken(user.getUserId(), String.valueOf(user.getRole()), user.getName());
-        // 2) JSON 응답 바디 세팅
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        // 예시로 accessToken만, 필요하면 refreshToken 등 추가
-        Map<String, Object> responseBody = Map.of(
-                "accessToken",  token.getAccessToken(),
-                "code", 200,
-                "message", "로그인/회원가입에 성공했습니다."
-        );
-        objectMapper.writeValue(response.getWriter(), responseBody);
+        String accessToken = token.getAccessToken();
+
+        // 2. 리다이렉트할 URL 생성
+        String targetUrl = UriComponentsBuilder.fromUriString("https://wishpool.store/auth/callback")
+                .queryParam("accessToken", accessToken)
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUriString();
+
+        // 3. 리다이렉트 실행
+        // SimpleUrlAuthenticationSuccessHandler에서 제공하는 리다이렉트 로직을 사용합니다.
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }
