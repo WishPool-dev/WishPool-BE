@@ -1,5 +1,6 @@
 package WishPool.Be.wishpoool.presentation;
 
+import WishPool.Be.wishpoool.application.dto.request.CelebrantPickGifts;
 import WishPool.Be.wishpoool.application.dto.request.CreateGiftListRequestDto;
 import WishPool.Be.wishpoool.application.command.WishPoolCommandService;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolGuestInfoResponseDto;
@@ -54,10 +55,12 @@ public class WishPoolController {
         return ResponseEntity.ok().body(giftListQueryService.getGiftsForBirthdayOwner(chosenIdentifier));
     }
 
-    @Operation(summary = "생일자 본인의 선물 리스트 선택", description = "생일자가 위시풀 리스트 중 마음에 드는 선물을 선택합니다.")
+    @Operation(summary = "생일자 본인의 선물 리스트 선택",
+            description = "생일자가 위시풀 리스트 중 마음에 드는 선물을 선택합니다. " +
+                    "기존 선물 리스트에 선물 id가 포함되어있기 때문에 사용자가 선택한 선물들만 body에 담아주시면 됩니다.")
     @PostMapping("/celebrant/{wishpoolId}")
     public ResponseEntity<Long> selectGiftsByBirthdayOwner(
-            @Parameter(description = "생일자 확인용 식별자", example = "f6g7h8i9j0") @PathVariable Long wishpoolId, @RequestBody List<Long> giftItemIds){
-        return ResponseEntity.ok().body(wishPoolCommandService.selectGiftsByCelebrant(wishpoolId, giftItemIds));
+            @Parameter(description = "생일자 확인용 식별자", example = "f6g7h8i9j0") @PathVariable Long wishpoolId, @RequestBody CelebrantPickGifts giftItemIds){
+        return ResponseEntity.ok().body(wishPoolCommandService.selectGiftsByCelebrant(wishpoolId, giftItemIds.gifts()));
     }
 }
