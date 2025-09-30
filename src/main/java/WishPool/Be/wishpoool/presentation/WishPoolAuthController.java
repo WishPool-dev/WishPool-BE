@@ -5,6 +5,7 @@ import WishPool.Be.wishpoool.application.command.WishPoolCommandService;
 import WishPool.Be.wishpoool.application.dto.request.CreateGiftListRequestDto;
 import WishPool.Be.wishpoool.application.dto.request.CreateWishPoolRequestDto;
 import WishPool.Be.wishpoool.application.dto.request.StartSelectionRequestDto;
+import WishPool.Be.wishpoool.application.dto.request.WishpoolUpdateRequestDto;
 import WishPool.Be.wishpoool.application.dto.response.CelebrantUrlResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.CreatedWishPoolResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolDetailResponseDto;
@@ -71,4 +72,14 @@ public class WishPoolAuthController {
             @RequestBody StartSelectionRequestDto dto){
         return ResponseEntity.ok().body(wishPoolCommandService.getChosenURL(wishpoolId, dto.pickDate(), securityUserDto.getUserId()));
     }
+
+    @Operation(summary = "위시풀 수정", description = "대표자가 선물 선택 마감일을 설정하고, 생일자에게 전달할 선물 확인용 고유 링크를 생성합니다.")
+    @PatchMapping("/{wishpoolId}")
+    public ResponseEntity<WishpoolUpdateRequestDto> updateWishPool(
+            @AuthenticationPrincipal SecurityUserDto securityUserDto,
+            @RequestBody WishpoolUpdateRequestDto dto,
+            @PathVariable Long wishpoolId){
+        return ResponseEntity.ok().body(wishPoolCommandService.updateWishPool(wishpoolId, securityUserDto.getUserId(), dto));
+    }
+
 }

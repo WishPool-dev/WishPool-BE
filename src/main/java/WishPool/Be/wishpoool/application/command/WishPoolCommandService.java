@@ -112,12 +112,17 @@ public class WishPoolCommandService {
 
     // 위시풀 수정하기
     @Transactional(readOnly = false)
-    public Long updateWishPool(Long wishpoolId, Long userId, WishpoolUpdateRequestDto dto){
+    public WishpoolUpdateRequestDto updateWishPool(Long wishpoolId, Long userId, WishpoolUpdateRequestDto dto){
         Participant participant = participantRepository.findParticipantByUserAndWishPool(wishpoolId, userId);
         if (participant == null){
             throw new  BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND);
         }
-        return participant.getWishPool().updateWishpool();
+        participant.getWishPool().updateWishpool(dto);
+        return dto;
     }
+
+    // 위시풀 삭제하기
+
+    // 생일자 위시풀 선택 후 확인하는 링크?
 
 }

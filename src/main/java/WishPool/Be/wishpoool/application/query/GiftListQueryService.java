@@ -68,5 +68,10 @@ public class GiftListQueryService {
                 wishPool.getCelebrantPickEndDate()
         );
     }
+
+
+    // 선물 선택 후 링크 생성
+
+    // 선택 완료된 선물 조회
 }
 

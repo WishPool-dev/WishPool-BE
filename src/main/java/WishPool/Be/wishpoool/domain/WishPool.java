@@ -6,6 +6,7 @@ import WishPool.Be.wishpoool.application.dto.request.CreateGiftListRequestDto;
 import WishPool.Be.user.domain.User;
 import WishPool.Be.util.BaseEntity;
 import WishPool.Be.wishpoool.application.dto.request.CreateWishPoolRequestDto;
+import WishPool.Be.wishpoool.application.dto.request.WishpoolUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -124,8 +125,19 @@ public class WishPool extends BaseEntity {
     }
 
     // 위시풀 수정하기(
-    public Long updateWishpool(){
-        return 1L;
+    public void updateWishpool(WishpoolUpdateRequestDto dto){
+        if (dto.celebrant() != null) {
+            this.celebrant = dto.celebrant();
+        }
+        if (dto.birthDay() != null) {
+            this.birthDay = dto.birthDay();
+        }
+        if (dto.description() != null) {
+            this.description = dto.description();
+        }
+        if (dto.endDate() != null) {
+            this.participantEndDate = dto.endDate();
+        }
     }
 
     // 연관관계 편의 메소드

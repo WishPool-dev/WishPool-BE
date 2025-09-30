@@ -75,4 +75,6 @@ public class WishPoolQueryService {
         // 픽 마감일
         else return (int) ChronoUnit.DAYS.between(LocalDate.now(), wishPool.getCelebrantPickEndDate());
     }
+
+    // 게스트 링크 생성
 }
