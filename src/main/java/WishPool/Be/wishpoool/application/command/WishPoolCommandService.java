@@ -35,7 +35,8 @@ public class WishPoolCommandService {
                 .orElseThrow(()-> new BusinessException(ErrorStatus.USER_NOT_FOUND));
         String inviteUrl = IdentifierGenerator.generateShareIdentifier();
         String chosenUrl = IdentifierGenerator.generateShareIdentifier();
-        WishPool wishPoolToSave = WishPool.createWishPool(dto, owner, inviteUrl, chosenUrl);
+        String completeUrl = IdentifierGenerator.generateShareIdentifier();
+        WishPool wishPoolToSave = WishPool.createWishPool(dto, owner, inviteUrl, chosenUrl, completeUrl);
         // DTO에 엔티티를 받는 생성자를 만들기
         return new CreatedWishPoolResponseDto(wishPoolRepository.save(wishPoolToSave));
     }
@@ -106,6 +107,7 @@ public class WishPoolCommandService {
         WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
         List<GiftItem> items = giftItemRepository.findAllByGiftItemIdIn(giftItemIds);
         wishPool.createSelectedGift(items);
+        wishPool.changeStatusToCompleted();
         // wishPoolRepository.save(wishPool);
         return wishpoolId;
     }
@@ -122,7 +124,9 @@ public class WishPoolCommandService {
     }
 
     // 위시풀 삭제하기
-
-    // 생일자 위시풀 선택 후 확인하는 링크?
-
+    @Transactional(readOnly = false)
+    public void deleteWishPool(Long wishpoolId){
+        WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
+        wishPoolRepository.delete(wishPool);
+    }
 }

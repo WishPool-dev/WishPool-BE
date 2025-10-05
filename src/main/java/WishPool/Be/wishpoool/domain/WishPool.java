@@ -56,6 +56,10 @@ public class WishPool extends BaseEntity {
     @Column(name = "chosen_identifier",unique = true)
     private String chosenIdentifier;
 
+    // 나중에 생일자에게 전달할 링크
+    @Column(name = "complete_identifier",unique = true)
+    private String completeIdentifier;
+
     @Column(name = "owner_name", nullable = false)
     private String ownerName;
 
@@ -67,7 +71,7 @@ public class WishPool extends BaseEntity {
     @OneToMany(mappedBy = "wishPool", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SelectedGift> selectedGifts = new ArrayList<>();
 
-    public static WishPool createWishPool(CreateWishPoolRequestDto dto, User owner, String shareIdentifier, String chosenIdentifier){
+    public static WishPool createWishPool(CreateWishPoolRequestDto dto, User owner, String shareIdentifier, String chosenIdentifier, String completeIdentifierIdentifier){
         WishPool wishPool = WishPool.builder()
                 .celebrant(dto.celebrant())
                 .birthDay(dto.birthDay())
@@ -78,6 +82,7 @@ public class WishPool extends BaseEntity {
                 .wishPoolStatus(WishPoolStatus.OPEN)
                 .ownerName(owner.getName())
                 .chosenIdentifier(chosenIdentifier)
+                .completeIdentifier(completeIdentifierIdentifier)
                 .build();
         Participant organizer = Participant.fromOwner(wishPool, owner);
         wishPool.addParticipant(organizer);

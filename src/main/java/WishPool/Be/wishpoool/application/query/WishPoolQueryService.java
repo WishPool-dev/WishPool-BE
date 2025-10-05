@@ -8,6 +8,7 @@ import WishPool.Be.wishpoool.application.dto.response.GuestSharedDto;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolDetailResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolGuestInfoResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolResponseDto;
+import WishPool.Be.wishpoool.application.dto.response.gift.SelectedGiftsDto;
 import WishPool.Be.wishpoool.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -79,8 +80,26 @@ public class WishPoolQueryService {
     }
 
     // 게스트 링크 생성
+    @Transactional(readOnly = true)
     public GuestSharedDto getSharedLink(Long wishpoolId){
         WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
-        return GuestSharedDto.of(wishPool);
+        return GuestSharedDto.from(wishPool);
+    }
+
+    // 생일자가 선물 선택 후 공유할 링크 생성
+    @Transactional(readOnly = true)
+    public GuestSharedDto getCompleteLink(Long wishpoolId){
+        WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
+        return GuestSharedDto.completedLinkFrom(wishPool);
+    }
+
+    // 생일자가 고른 선물 확인
+    @Transactional(readOnly = true)
+    public SelectedGiftsDto getCompletedWishpoolInfo(String completeIdentifier) {
+        WishPool wishPool = wishPoolRepository.findByCompletedIdentifier(completeIdentifier).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
+        List<GiftItem> giftItems = wishPool.getSelectedGifts().stream()
+                .map(SelectedGift::getGiftItem)
+                .toList();
+        return  SelectedGiftsDto.from(wishPool, giftItems);
     }
 }

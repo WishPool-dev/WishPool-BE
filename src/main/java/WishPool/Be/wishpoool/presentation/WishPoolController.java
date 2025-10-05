@@ -7,6 +7,7 @@ import WishPool.Be.wishpoool.application.dto.response.GuestSharedDto;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolGuestInfoResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.gift.BirthdayGiftsViewResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.gift.GiftListResponseDto;
+import WishPool.Be.wishpoool.application.dto.response.gift.SelectedGiftsDto;
 import WishPool.Be.wishpoool.application.query.GiftListQueryService;
 import WishPool.Be.wishpoool.application.query.WishPoolQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,15 +62,31 @@ public class WishPoolController {
                     "기존 선물 리스트에 선물 id가 포함되어있기 때문에 사용자가 선택한 선물들만 body에 담아주시면 됩니다.")
     @PostMapping("/celebrant/{wishpoolId}")
     public ResponseEntity<Long> selectGiftsByBirthdayOwner(
-            @Parameter(description = "생일자 확인용 식별자", example = "f6g7h8i9j0") @PathVariable Long wishpoolId, @RequestBody CelebrantPickGifts giftItemIds){
+            @Parameter(description = "생일자 확인용 식별자", example = "1") @PathVariable Long wishpoolId, @RequestBody CelebrantPickGifts giftItemIds){
         return ResponseEntity.ok().body(wishPoolCommandService.selectGiftsByCelebrant(wishpoolId, giftItemIds.gifts()));
     }
 
     @Operation(summary = "게스트 링크 생성",
             description = "게스트에게 링크를 전달합니다. 해당 shareIdentifier 응답의 값을 사용하여 GET 요청을 보내면 wishpool의 정보를 확인할 수 있습니다.")
-    @GetMapping("/guest/{wishpoolId}/shared")
+    @GetMapping("/guest/shared/{wishpoolId}")
     public ResponseEntity<GuestSharedDto> getGuestsLink(
             @Parameter(description = "위시풀 ID", example = "1") @PathVariable Long wishpoolId){
         return ResponseEntity.ok().body(wishPoolQueryService.getSharedLink(wishpoolId));
+    }
+
+    @Operation(summary = "선물 선택 후 링크 생성 (생일자가 선물 선택 후 참여자에게 다시 보내줄 링크)",
+            description = "생일자가 선물 선택 후 참여자에게 공유할 링크를 선택합니다. 해당 shareIdentifier 응답의 값을 사용하여 GET 요청을 보내면 사용자가 고른 선물의 정보를 확인할 수 있습니다.")
+    @GetMapping("/celebrant/picked/{wishpoolId}")
+    public ResponseEntity<GuestSharedDto> getCelebrantPickId(
+            @Parameter(description = "위시풀 ID", example = "1") @PathVariable Long wishpoolId){
+        return ResponseEntity.ok().body(wishPoolQueryService.getCompleteLink(wishpoolId));
+    }
+
+    @Operation(summary = "생일자가 선택한 선물 조회",
+            description = "생일자가 선물 선택 후 참여자에게 공유할 링크를 통해 생일자가 선택한 선물을 조회합니다. 조회된 위시풀의 상태는 complete입니다.")
+    @GetMapping("/wishpool/completed/{completeIdentifier}")
+    public ResponseEntity<SelectedGiftsDto> findCompletedWishpool(
+            @Parameter(description = "선물 선택 후 링크", example = "completeIdentifierIdentifier") @PathVariable String completeIdentifier){
+        return ResponseEntity.ok().body(wishPoolQueryService.getCompletedWishpoolInfo(completeIdentifier));
     }
 }

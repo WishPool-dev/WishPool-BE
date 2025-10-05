@@ -44,4 +44,14 @@ public class WishPoolRepositoryAdapter implements WishPoolRepository {
     public List<WishPool> findAllByWishPoolStatusAndParticipantEndDate(WishPoolStatus status, LocalDate today) {
         return wishPoolJpaRepository.findAllByWishPoolStatusAndParticipantEndDate(status, today);
     }
+
+    @Override
+    public void delete(WishPool wishPool) {
+        wishPoolJpaRepository.delete(wishPool);
+    }
+
+    @Override
+    public Optional<WishPool> findByCompletedIdentifier(String completeIdentifier) {
+        return wishPoolJpaRepository.findWishPoolByCompleteIdentifier(completeIdentifier);
+    }
 }

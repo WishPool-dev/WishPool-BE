@@ -16,6 +16,13 @@ public interface WishPoolJpaRepository extends JpaRepository<WishPool, Long> {
     public Optional<WishPool> findWishPoolByShareIdentifier(String shareIdentifier);
     public Optional<WishPool> findWishPoolByChosenIdentifier(String chosenIdentifier);
 
+
+    @Query("SELECT w FROM WishPool w " +
+            "JOIN FETCH w.selectedGifts sg " +
+            "JOIN FETCH sg.giftItem " +
+            "WHERE w.completeIdentifier = :completeIdentifier")
+    public Optional<WishPool> findWishPoolByCompleteIdentifier(String completeIdentifier);
+
     @Query("SELECT DISTINCT w FROM WishPool w " +
             "JOIN FETCH w.participants p " +
             "LEFT JOIN FETCH p.giftList gl " +
