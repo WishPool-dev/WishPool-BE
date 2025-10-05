@@ -38,13 +38,17 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
 
-    public static User createUser(String name, String email, Role role, String provider, String providerId) {
+    @Column(length = 512)
+    private String profileImageUrl;
+
+    public static User createUser(String name, String email, Role role, String provider, String providerId, String profileImageUrl) {
         User user = new User();
         user.email = email;
         user.name = name;
         user.role = role;
         user.provider = provider;
         user.providerId = providerId;
+        user.profileImageUrl=profileImageUrl;
         return user;
     }
 

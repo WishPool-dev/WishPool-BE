@@ -36,11 +36,12 @@ public class UserServiceOauth2 extends DefaultOAuth2UserService {
             @SuppressWarnings("unchecked")
             Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
             String name = (String) profile.get("nickname");
+            String profileImageUrl = (String) profile.getOrDefault("profile_image_url", "default_img"); // 프로필 사진이 없으면 null
             String provider = userRequest.getClientRegistration().getRegistrationId(); // "kakao"
             String providerId = userAttr.get("id").toString();
 
             User user = userRepository.findByEmail(email).orElseGet(()-> {
-                User newUser = User.createUser(name,email, Role.ROLE_USER, provider, providerId);
+                User newUser = User.createUser(name,email, Role.ROLE_USER, provider, providerId, profileImageUrl);
                 return userRepository.save(newUser);
             });
 
