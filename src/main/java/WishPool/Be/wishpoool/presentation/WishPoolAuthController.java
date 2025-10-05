@@ -81,5 +81,13 @@ public class WishPoolAuthController {
             @PathVariable Long wishpoolId){
         return ResponseEntity.ok().body(wishPoolCommandService.updateWishPool(wishpoolId, securityUserDto.getUserId(), dto));
     }
+    @Operation(summary = "위시풀 삭제", description = "대표자가 위시풀을 삭제합니다.")
+    @DeleteMapping("/{wishpoolId}")
+    public ResponseEntity<Void> deleteWishpool(
+            @AuthenticationPrincipal SecurityUserDto securityUserDto,
+            @PathVariable Long wishpoolId){
+        wishPoolCommandService.deleteWishPool(wishpoolId);
+        return ResponseEntity.noContent().build();
+    }
 
 }
