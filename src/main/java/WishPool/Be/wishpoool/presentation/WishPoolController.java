@@ -3,6 +3,7 @@ package WishPool.Be.wishpoool.presentation;
 import WishPool.Be.wishpoool.application.dto.request.CelebrantPickGifts;
 import WishPool.Be.wishpoool.application.dto.request.CreateGiftListRequestDto;
 import WishPool.Be.wishpoool.application.command.WishPoolCommandService;
+import WishPool.Be.wishpoool.application.dto.response.GuestSharedDto;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolGuestInfoResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.gift.BirthdayGiftsViewResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.gift.GiftListResponseDto;
@@ -62,5 +63,13 @@ public class WishPoolController {
     public ResponseEntity<Long> selectGiftsByBirthdayOwner(
             @Parameter(description = "생일자 확인용 식별자", example = "f6g7h8i9j0") @PathVariable Long wishpoolId, @RequestBody CelebrantPickGifts giftItemIds){
         return ResponseEntity.ok().body(wishPoolCommandService.selectGiftsByCelebrant(wishpoolId, giftItemIds.gifts()));
+    }
+
+    @Operation(summary = "게스트 링크 생성",
+            description = "게스트에게 링크를 전달합니다. 해당 shareIdentifier 응답의 값을 사용하여 GET 요청을 보내면 wishpool의 정보를 확인할 수 있습니다.")
+    @GetMapping("/guest/{wishpoolId}/shared")
+    public ResponseEntity<GuestSharedDto> getGuestsLink(
+            @Parameter(description = "위시풀 ID", example = "1") @PathVariable Long wishpoolId){
+        return ResponseEntity.ok().body(wishPoolQueryService.getSharedLink(wishpoolId));
     }
 }

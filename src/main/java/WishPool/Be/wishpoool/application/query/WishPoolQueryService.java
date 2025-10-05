@@ -4,6 +4,7 @@ import WishPool.Be.global.exception.business.BusinessException;
 import WishPool.Be.global.exception.business.ErrorStatus;
 import WishPool.Be.user.domain.User;
 import WishPool.Be.user.domain.UserRepository;
+import WishPool.Be.wishpoool.application.dto.response.GuestSharedDto;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolDetailResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolGuestInfoResponseDto;
 import WishPool.Be.wishpoool.application.dto.response.WishPoolResponseDto;
@@ -39,7 +40,8 @@ public class WishPoolQueryService {
                             participant.getWishPool().getWishPoolStatus(),
                             remainingDays,
                             participant.getWishPool().getImageKey(),
-                            participant.getWishPool().getCelebrant()
+                            participant.getWishPool().getCelebrant(),
+                            participant.getWishPool().getBirthDay()
                     );
                 }
         ).toList();
@@ -77,4 +79,8 @@ public class WishPoolQueryService {
     }
 
     // 게스트 링크 생성
+    public GuestSharedDto getSharedLink(Long wishpoolId){
+        WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
+        return GuestSharedDto.of(wishPool);
+    }
 }
