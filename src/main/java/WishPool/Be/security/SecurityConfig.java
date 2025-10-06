@@ -8,6 +8,7 @@ import WishPool.Be.security.service.UserServiceOauth2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -68,6 +69,9 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/contact/**"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/files/**").permitAll()      // GET 요청은 누구나 가능
+                        .requestMatchers(HttpMethod.POST, "/api/files").authenticated()   // POST 요청은 인증 필요
+                        .requestMatchers(HttpMethod.DELETE, "/api/files/**").authenticated() // DELETE 요청은 인증 필요
                         // /api/** 는 인증 필요
                         .requestMatchers("/api/**").authenticated()
                         // 나머지는 모두 허용 (필요에 따라 변경)
