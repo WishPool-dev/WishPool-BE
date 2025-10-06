@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
     private final UserQueryService userQueryService;
-    @PostMapping("/logout")
+    @PostMapping("/api/auth/logout")
     public ResponseEntity<String> logout(){
         return ResponseEntity.ok().body("로그아웃 되었습니다.");
     }
