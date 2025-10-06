@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Tag(name = "파일/이미지 API", description = "이미지 업로드, 조회, 삭제 관련 API")
@@ -24,14 +25,14 @@ public class ImageController {
             description = "GCS에 이미지를 업로드하고, 즉시 이미지 키를 반환합니다. (비동기 처리)")
     @PostMapping
     public ResponseEntity<ImageUploadResponse> uploadImage(
-            @Parameter(description = "업로드할 이미지 파일") @RequestParam("file") MultipartFile file) {
+            @Parameter(description = "업로드할 이미지 파일") @RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(new ImageUploadResponse("업로드된 이미지가 없습니다."));
         }
         // 1. GCS에 저장될 파일의 키를 미리 생성합니다.
         String imageKey = UUID.randomUUID().toString();
         // 2. 비동기 메소드를 호출하여 파일 업로드를 위임합니다.
-        fileService.uploadImageAsync(file, imageKey);
+        fileService.uploadImageAsync(file.getBytes(), imageKey, file.getContentType());
         ImageUploadResponse response = new ImageUploadResponse(imageKey);
         return ResponseEntity.ok().body(response);        // 3. 파일 업로드 완료를 기다리지 않고, 생성된 키를 클라이언트에게 즉시 반환합니다.
     }

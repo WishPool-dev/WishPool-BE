@@ -25,18 +25,18 @@ public class GcsService implements FileService {
     private String bucketName;
 
     @Override
-    @Async // 이 메소드를 별도의 스레드에서 비동기로 실행
-    public void uploadImageAsync(MultipartFile file, String key) {
+    @Async
+    public void uploadImageAsync(byte[] fileBytes, String key, String contentType) { // 파라미터 변경
+        log.info("비동기 GCS 업로드 시작: key={}", key);
         try {
-            String contentType = file.getContentType();
             storage.create(
                     BlobInfo.newBuilder(bucketName, key)
                             .setContentType(contentType)
                             .build(),
-                    file.getInputStream()
+                    fileBytes // getInputStream() 대신 byte[]를 직접 사용
             );
-            // 성공/실패에 대한 로그를 남기는 것이 좋음
-        } catch (IOException e) {
+            log.info("비동기 GCS 업로드 성공: key={}", key);
+        } catch (Exception e) {
             log.error("비동기 GCS 업로드 실패: key={}", key, e);
             throw new GcsUploadException("비동기 GCS 업로드에 실패했습니다.", e);
         }

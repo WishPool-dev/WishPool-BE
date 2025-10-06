@@ -22,6 +22,8 @@ public record WishpoolUpdateRequestDto(
         // yyyy-MM-dd 형식으로 입력을 받고, 오늘 또는 미래의 날짜인지 검증합니다.
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         @FutureOrPresent(message = "마감일은 오늘 이후의 날짜여야 합니다.")
-        LocalDate endDate
+        LocalDate endDate,
+
+        String imageKey
 ) {
 }

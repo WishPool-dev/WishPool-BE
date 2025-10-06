@@ -149,6 +149,9 @@ public class WishPool extends BaseEntity {
         if (dto.endDate() != null) {
             this.participantEndDate = dto.endDate();
         }
+        if (dto.imageKey() != null) {
+            this.imageKey = dto.imageKey();
+        }
     }
 
     // 연관관계 편의 메소드
