@@ -18,9 +18,10 @@ public record WishPoolDetailResponseDto(
     int d_day,
     WishPoolStatus status,
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    LocalDate birthDay
+    LocalDate birthDay,
+    boolean ownerJoined
 ){
-    public static WishPoolDetailResponseDto from(WishPool wishPool, Long joinCount, int d_day){
+    public static WishPoolDetailResponseDto from(WishPool wishPool, Long joinCount, int d_day, boolean ownerJoined){
         return new WishPoolDetailResponseDto(
                 wishPool.getImageKey()
                 ,wishPool.getParticipantEndDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
@@ -29,6 +30,7 @@ public record WishPoolDetailResponseDto(
                 ,wishPool.getDescription()
                 ,d_day
                 ,wishPool.getWishPoolStatus()
-                ,wishPool.getBirthDay());
+                ,wishPool.getBirthDay(),
+                ownerJoined);
     }
 }
