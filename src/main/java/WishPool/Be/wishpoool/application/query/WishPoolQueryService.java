@@ -54,7 +54,7 @@ public class WishPoolQueryService {
         WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
         Long joinCount = participantRepository.getParticipantCount(wishpoolId);
         int d_day = calculateEndDate(wishPool);
-        return new WishPoolDetailResponseDto(wishPool, joinCount, d_day);
+        return WishPoolDetailResponseDto.from(wishPool, joinCount, d_day);
     }
 
     // 게스트 info, 재사용
