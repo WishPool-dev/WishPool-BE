@@ -129,4 +129,12 @@ public class WishPoolCommandService {
         WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
         wishPoolRepository.delete(wishPool);
     }
+
+    // 위시풀 제안 마감치기
+    @Transactional(readOnly = false)
+    public Long updateWishPoolStatusToPending(Long wishpoolId){
+        WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
+        wishPool.changeStatusAndEndDate();
+        return wishPool.getWishPoolId();
+    }
 }

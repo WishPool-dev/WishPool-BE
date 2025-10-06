@@ -117,6 +117,12 @@ public class WishPool extends BaseEntity {
         this.wishPoolStatus = WishPoolStatus.PENDING;
     }
 
+    // 대표자의 위시풀 즉시 마감
+    public void changeStatusAndEndDate(){
+        this.wishPoolStatus = WishPoolStatus.PENDING;
+        this.participantEndDate = LocalDate.now();
+    }
+
     // 사용자 선물 선택 시 COMPLETED 변경
     public void changeStatusToCompleted(){
         this.wishPoolStatus = WishPoolStatus.COMPLETED;

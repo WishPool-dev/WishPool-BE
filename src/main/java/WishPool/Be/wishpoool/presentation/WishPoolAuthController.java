@@ -1,5 +1,6 @@
 package WishPool.Be.wishpoool.presentation;
 
+import WishPool.Be.common.MetaData;
 import WishPool.Be.security.service.SecurityUserDto;
 import WishPool.Be.wishpoool.application.command.WishPoolCommandService;
 import WishPool.Be.wishpoool.application.dto.request.CreateGiftListRequestDto;
@@ -90,4 +91,10 @@ public class WishPoolAuthController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "위시풀 즉시 마감", description = "대표자가 위시풀을 즉시 마감합니다. 참여자 마감일자도 요청 당시의 날짜로 변경합니다.")
+    @PatchMapping("/status/{wishpoolId}")
+    public ResponseEntity<Long> changeEndDate(
+            @PathVariable Long wishpoolId){
+        return ResponseEntity.ok().body(wishPoolCommandService.updateWishPoolStatusToPending(wishpoolId));
+    }
 }
