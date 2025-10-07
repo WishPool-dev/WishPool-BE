@@ -38,7 +38,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         String accessToken = token.getAccessToken();
 
         // 2. 리다이렉트할 URL 생성
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/auth/callback")
+        String targetUrl = UriComponentsBuilder.fromUriString("https://wishpool.store/auth/callback")
                 .queryParam("accessToken", accessToken)
                 .build()
                 .encode(StandardCharsets.UTF_8)
