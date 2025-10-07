@@ -8,9 +8,10 @@ public record BirthdayGiftsViewResponseDto(
         List<GiftItemResponseDto> gifts,
         String  celebrant,
         LocalDate birthDay,
-        LocalDate endPickDate
+        LocalDate endPickDate,
+        String imageKey
 ) {
-    public static BirthdayGiftsViewResponseDto of(Long wishpoolId, List<GiftItemResponseDto> gifts, String celebrant, LocalDate birthDay, LocalDate endPickDate) {
-        return new BirthdayGiftsViewResponseDto(wishpoolId, gifts, celebrant, birthDay, endPickDate);
+    public static BirthdayGiftsViewResponseDto of(Long wishpoolId, List<GiftItemResponseDto> gifts, String celebrant, LocalDate birthDay, LocalDate endPickDate, String imageKey) {
+        return new BirthdayGiftsViewResponseDto(wishpoolId, gifts, celebrant, birthDay, endPickDate, imageKey);
     }
 }

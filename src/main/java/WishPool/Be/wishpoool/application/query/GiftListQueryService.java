@@ -65,7 +65,8 @@ public class GiftListQueryService {
                 giftsDto.gifts(), // GiftListResponseDto에서 실제 선물 리스트만 전달
                 wishPool.getCelebrant(),
                 wishPool.getBirthDay(),
-                wishPool.getCelebrantPickEndDate()
+                wishPool.getCelebrantPickEndDate(),
+                wishPool.getImageKey()
         );
     }
 

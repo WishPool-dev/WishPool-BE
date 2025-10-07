@@ -84,7 +84,7 @@ public class WishPoolController {
 
     @Operation(summary = "생일자가 선택한 선물 조회 - completeIdentifier",
             description = "생일자가 선물 선택 후 참여자에게 공유할 링크를 통해 생일자가 선택한 선물을 조회합니다. 조회된 위시풀의 상태는 complete입니다.")
-    @GetMapping("/wishpool/completed/{completeIdentifier}")
+    @GetMapping("/completed/{completeIdentifier}")
     public ResponseEntity<SelectedGiftsDto> findCompletedWishpool(
             @Parameter(description = "선물 선택 후 링크", example = "completeIdentifierIdentifier") @PathVariable String completeIdentifier){
         return ResponseEntity.ok().body(wishPoolQueryService.getCompletedWishpoolInfo(completeIdentifier));
@@ -92,7 +92,7 @@ public class WishPoolController {
 
     @Operation(summary = "생일자가 선택한 선물 조회 - wishpoolId",
             description = "생일자가 선물 선택 후 참여자에게 공유할 링크를 통해 생일자가 선택한 선물을 조회합니다. 조회된 위시풀의 상태는 complete입니다.")
-    @GetMapping("/wishpool/completed/{wishpoolId}")
+    @GetMapping("/completed/{wishpoolId}")
     public ResponseEntity<SelectedGiftsDto> findCompletedWishpool(
             @Parameter(description = "Id로 선택한 선물 조회 =", example = "wishpoolId") @PathVariable Long wishpoolId){
         return ResponseEntity.ok().body(wishPoolQueryService.getCompletedWishpoolInfoById(wishpoolId));
