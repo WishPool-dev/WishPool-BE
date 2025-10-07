@@ -38,7 +38,9 @@ public class OAuth2JwtAuthFilter extends OncePerRequestFilter {
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/v3/api-docs")
                 || path.startsWith("/api/test")
-                || path.startsWith("/contact");
+                || path.startsWith("/contact")
+                || path.startsWith("/wishpools")
+                || path.startsWith("/wishpools/");
     }
 
     @Override
