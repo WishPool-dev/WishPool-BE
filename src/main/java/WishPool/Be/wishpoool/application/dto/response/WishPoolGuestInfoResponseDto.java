@@ -13,9 +13,16 @@ public record WishPoolGuestInfoResponseDto(
         String description,
         Long wishpoolId,
         @DateTimeFormat(pattern = "yyyy/mm/dd")
-        LocalDate birthDay
+        LocalDate birthDay,
+        String imageKey
         ) {
     public WishPoolGuestInfoResponseDto(WishPool wishPool){
-        this(wishPool.getOwnerName(), wishPool.getCelebrant(), wishPool.getParticipantEndDate(), wishPool.getDescription(), wishPool.getWishPoolId(), wishPool.getBirthDay());
+        this(wishPool.getOwnerName()
+                ,wishPool.getCelebrant()
+                , wishPool.getParticipantEndDate()
+                , wishPool.getDescription()
+                , wishPool.getWishPoolId()
+                , wishPool.getBirthDay()
+                ,wishPool.getImageKey());
     }
 }
