@@ -54,4 +54,9 @@ public class WishPoolRepositoryAdapter implements WishPoolRepository {
     public Optional<WishPool> findByCompletedIdentifier(String completeIdentifier) {
         return wishPoolJpaRepository.findWishPoolByCompleteIdentifier(completeIdentifier);
     }
+
+    @Override
+    public Optional<WishPool> findWishPoolByWishPoolId(Long wishpoolId) {
+        return wishPoolJpaRepository.findWishPoolByWishPoolId(wishpoolId);
+    }
 }

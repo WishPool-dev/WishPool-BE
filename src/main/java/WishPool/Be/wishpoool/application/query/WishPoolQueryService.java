@@ -104,4 +104,14 @@ public class WishPoolQueryService {
                 .toList();
         return  SelectedGiftsDto.from(wishPool, giftItems);
     }
+
+    // 생일자가 고른 선물 확인 - wishpoolId
+    @Transactional(readOnly = true)
+    public SelectedGiftsDto getCompletedWishpoolInfoById(Long wishpoolId) {
+        WishPool wishPool = wishPoolRepository.findWishPoolByWishPoolId(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
+        List<GiftItem> giftItems = wishPool.getSelectedGifts().stream()
+                .map(SelectedGift::getGiftItem)
+                .toList();
+        return  SelectedGiftsDto.from(wishPool, giftItems);
+    }
 }
