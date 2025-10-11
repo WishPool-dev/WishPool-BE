@@ -115,7 +115,7 @@ public class WishPoolCommandService {
     // 위시풀 수정하기
     @Transactional(readOnly = false)
     public WishpoolUpdateRequestDto updateWishPool(Long wishpoolId, Long userId, WishpoolUpdateRequestDto dto){
-        Participant participant = participantRepository.findParticipantByUserAndWishPool(wishpoolId, userId);
+        Participant participant = participantRepository.findParticipantByUserAndWishPool(userId, wishpoolId);
         if (participant == null){
             throw new  BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND);
         }
