@@ -1,6 +1,7 @@
 package WishPool.Be.wishpoool.application.dto.response;
 
 import WishPool.Be.wishpoool.domain.WishPool;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ public record WishPoolGuestInfoResponseDto(
         LocalDate endDate,
         String description,
         Long wishpoolId,
-        @DateTimeFormat(pattern = "yyyy/mm/dd")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
         LocalDate birthDay,
         String imageKey
         ) {
