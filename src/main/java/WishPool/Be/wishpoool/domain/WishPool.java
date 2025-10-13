@@ -94,10 +94,10 @@ public class WishPool extends BaseEntity {
         if (this.wishPoolStatus != WishPoolStatus.PENDING) {
             throw new BusinessException(ErrorStatus.WISHPOOL_NOT_IN_PENDING_STATE);
         }
-        // 2. 날짜 유효성 검증: 참여 마감일 이후인지 스스로 확인
-        if (pickDate.isBefore(this.participantEndDate)) {
-            throw new BusinessException(ErrorStatus.INVALID_PICK_END_DATE);
-        }
+        // 2. 날짜 유효성 검증: 참여 마감일 이후인지 스스로 확인 -> 즉시 마감 후 PENDING으로 변경되었으나, 날짜가 남아있어 불가능하기에 수정
+        //        if (pickDate.isBefore(this.participantEndDate)) {
+        //            throw new BusinessException(ErrorStatus.INVALID_PICK_END_DATE);
+        //        }
         // 3. 상태 변경: 자신의 상태와 데이터를 직접 변경
         this.celebrantPickEndDate = pickDate;
         this.wishPoolStatus = WishPoolStatus.WAITING;
