@@ -33,7 +33,7 @@ public class WishPoolQueryService {
     @Transactional(readOnly = true)
     public List<WishPoolResponseDto> findWishPoolInfo(Long userId){
         User findUser = userRepository.findById(userId).orElseThrow(()-> new BusinessException(ErrorStatus.USER_NOT_FOUND));
-        return participantRepository.findTop3RecentParticipant(userId).stream().map(
+        return participantRepository.findRecentParticipant(userId).stream().map(
                 participant -> {
                     int remainingDays = calculateEndDate(participant.getWishPool());
                     return new WishPoolResponseDto(
