@@ -26,4 +26,9 @@ public class UserRepositoryAdapter implements UserRepository {
     public Optional<User> findById(Long userId) {
         return userJpaRepository.findById(userId);
     }
+
+    @Override
+    public void delete(User user) {
+        userJpaRepository.delete(user);
+    }
 }
