@@ -3,7 +3,7 @@ package WishPool.Be.wishpoool.domain;
 import java.util.List;
 
 public interface ParticipantRepository {
-    List<Participant> findTop3RecentParticipant(Long userId);
+    List<Participant> findRecentParticipant(Long userId);
 
     Long getParticipantCount(Long wishpoolId);
 

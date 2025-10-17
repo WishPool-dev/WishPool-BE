@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -60,20 +61,19 @@ public class WishPoolCommandService {
         // 1. 위시풀 찾기
         WishPool wishPool = wishPoolRepository.findById(dto.wishpoolId())
                 .orElseThrow(() -> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
-
         if (wishPool.getWishPoolStatus() != WishPoolStatus.OPEN) {
             throw new BusinessException(ErrorStatus.WISHPOOL_NOT_OPEN); // 예시 에러
         }
-
         // 3. 사용자 검증
         User owner = userRepository.findById(securityUserDto.getUserId())
                 .orElseThrow(()-> new BusinessException(ErrorStatus.USER_NOT_FOUND));
         // 4. 참여자 조회
         Participant participant = participantRepository.findWishPoolOwner(wishPool.getWishPoolId(), ParticipantRole.OWNER);
+        if(!Objects.equals(participant.getUser().getUserId(), owner.getUserId())){
+            throw new BusinessException(ErrorStatus.OWNER_NOT_CORRECT);
+        }
         // 5. 선물 리스트 추가
         participant.addGiftListByOwner(dto);
-        // 6. 변경 사항 저장 (이 부분은 명시적으로 호출할 필요 없을 수 있습니다)
-        // wishPoolRepository.save(wishPool);
         return wishPool.getWishPoolId();
     }
 

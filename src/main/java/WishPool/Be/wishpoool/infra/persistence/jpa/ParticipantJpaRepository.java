@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ParticipantJpaRepository extends JpaRepository<Participant, Long> {
     //최근 참여한 3개의 위시풀 리스트 조회 createdAt말고 modified도 생각해보면 좋을 듯
-    List<Participant> findTop3ByUser_UserIdOrderByCreatedDateDesc(Long userId);
+    List<Participant> findByUser_UserIdOrderByCreatedDateDesc(Long userId);
     Long countByWishPool_WishPoolId(Long wishpoolId);
     // wishpool과 owner를 탐색
     Participant findParticipantByWishPool_WishPoolIdAndParticipantRole(Long wishpoolId, ParticipantRole participantRole);

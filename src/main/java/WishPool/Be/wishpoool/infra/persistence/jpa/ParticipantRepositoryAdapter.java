@@ -14,8 +14,8 @@ public class ParticipantRepositoryAdapter implements ParticipantRepository{
     private final ParticipantJpaRepository participantJpaRepository;
 
     @Override
-    public List<Participant> findTop3RecentParticipant(Long userId) {
-        return participantJpaRepository.findTop3ByUser_UserIdOrderByCreatedDateDesc(userId);
+    public List<Participant> findRecentParticipant(Long userId) {
+        return participantJpaRepository.findByUser_UserIdOrderByCreatedDateDesc(userId);
     }
 
     @Override
