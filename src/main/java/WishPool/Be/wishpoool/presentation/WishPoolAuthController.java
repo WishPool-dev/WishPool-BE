@@ -56,15 +56,6 @@ public class WishPoolAuthController {
         return ResponseEntity.ok().body(wishPoolQueryService.findWishPoolDetail(wishpoolId, securityUserDto.getUserId()));
     }
 
-    @Operation(summary = "대표자 위시풀 참여", description = "위시풀을 생성한 대표자가 직접 선물 등록으로 참여합니다. (나도 참여하기)")
-    @PostMapping("/join")
-    public ResponseEntity<Long> joinWishPool(
-            @Parameter(hidden = true) @AuthenticationPrincipal SecurityUserDto securityUserDto,
-            @Valid @RequestBody CreateGiftListRequestDto dto){
-        URI uri = URI.create("api/wishpools/join");
-        return ResponseEntity.created(uri).body(wishPoolCommandService.createGiftListForOwner(securityUserDto, dto));
-    }
-
     @Operation(summary = "생일자 선물 선택 링크 생성", description = "대표자가 선물 선택 마감일을 설정하고, 생일자에게 전달할 선물 확인용 고유 링크를 생성합니다.")
     @PatchMapping("/{wishpoolId}/selection")
     public ResponseEntity<CelebrantUrlResponseDto> sendToCelebrant(

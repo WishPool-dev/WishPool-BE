@@ -1,5 +1,6 @@
 package WishPool.Be.wishpoool.presentation;
 
+import WishPool.Be.security.service.SecurityUserDto;
 import WishPool.Be.wishpoool.application.dto.request.CelebrantPickGifts;
 import WishPool.Be.wishpoool.application.dto.request.CreateGiftListRequestDto;
 import WishPool.Be.wishpoool.application.command.WishPoolCommandService;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -35,10 +37,12 @@ public class WishPoolController {
         return ResponseEntity.ok().body(wishPoolQueryService.getGuestInfo(shareIdentifier));
     }
 
-    @Operation(summary = "게스트 위시풀 참여 및 선물 등록", description = "게스트가 위시풀에 참여하며 이름과 선물 정보를 등록합니다.")
+    @Operation(summary = "위시풀 참여 및 선물 등록 (대표자와 통합)",
+            description = "사용자가 위시풀에 참여하며 이름과 선물 정보를 등록합니다." +
+                    "토큰이 있으면 대표자가 소유한 위시풀인지 검증, 아니면 참여자로 진행됩니다!")
     @PostMapping("/guests")
-    public ResponseEntity<Long> joinWishPoolWithGuest(@RequestBody CreateGiftListRequestDto dto){
-        Long createdWishpoolId = wishPoolCommandService.createGiftListForGuest(dto);
+    public ResponseEntity<Long> joinWishPoolWithGuest(@AuthenticationPrincipal SecurityUserDto securityUserDto, @RequestBody CreateGiftListRequestDto dto){
+        Long createdWishpoolId = wishPoolCommandService.createGiftList(securityUserDto, dto);
         URI uri = URI.create("/wishpools/guests");
         return ResponseEntity.created(uri).body(createdWishpoolId);
     }

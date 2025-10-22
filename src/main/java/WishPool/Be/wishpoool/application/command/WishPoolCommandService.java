@@ -41,39 +41,29 @@ public class WishPoolCommandService {
         // DTO에 엔티티를 받는 생성자를 만들기
         return new CreatedWishPoolResponseDto(wishPoolRepository.save(wishPoolToSave));
     }
-
-    // 오직 게스트만
-    @Transactional(readOnly = false)
-    public Long createGiftListForGuest(CreateGiftListRequestDto dto) {
-        // 1. 위시풀 찾기
+    @Transactional
+    public Long createGiftList(SecurityUserDto securityUserDto, CreateGiftListRequestDto dto) {
+        // 1. [공통] 위시풀 찾기
         WishPool wishPool = wishPoolRepository.findById(dto.wishpoolId())
                 .orElseThrow(() -> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
-        // 2. 참여자 생성
-        Participant guestParticipant = wishPool.addGuest(dto);
-        // 3. 위시풀 저장
-        wishPoolRepository.save(wishPool);
-        return wishPool.getWishPoolId();
-    }
 
-    // 나도 참여하기 시 선물 리스트 생성
-    @Transactional(readOnly = false)
-    public Long createGiftListForOwner(SecurityUserDto securityUserDto, CreateGiftListRequestDto dto) {
-        // 1. 위시풀 찾기
-        WishPool wishPool = wishPoolRepository.findById(dto.wishpoolId())
-                .orElseThrow(() -> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
-        if (wishPool.getWishPoolStatus() != WishPoolStatus.OPEN) {
-            throw new BusinessException(ErrorStatus.WISHPOOL_NOT_OPEN); // 예시 에러
+        // 2. securityUserDto의 존재 여부로 회원/비회원 로직 분기
+        if (securityUserDto == null) {
+            Participant guestParticipant = wishPool.addGuest(dto);
+            wishPoolRepository.save(wishPool);
+        } else {
+            // 3-1. 위시풀 상태 검증
+            if (wishPool.getWishPoolStatus() != WishPoolStatus.OPEN) {
+                throw new BusinessException(ErrorStatus.WISHPOOL_NOT_OPEN);
+            }
+            // 3-2. 사용자(주최자) 검증
+            Participant ownerParticipant = participantRepository.findWishPoolOwner(wishPool.getWishPoolId(), ParticipantRole.OWNER);
+            if (!ownerParticipant.getUser().getUserId().equals(securityUserDto.getUserId())) {
+                throw new BusinessException(ErrorStatus.OWNER_NOT_CORRECT);
+            }
+            // 3-3. 선물 리스트 추가
+            ownerParticipant.addGiftListByOwner(dto);
         }
-        // 3. 사용자 검증
-        User owner = userRepository.findById(securityUserDto.getUserId())
-                .orElseThrow(()-> new BusinessException(ErrorStatus.USER_NOT_FOUND));
-        // 4. 참여자 조회
-        Participant participant = participantRepository.findWishPoolOwner(wishPool.getWishPoolId(), ParticipantRole.OWNER);
-        if(!Objects.equals(participant.getUser().getUserId(), owner.getUserId())){
-            throw new BusinessException(ErrorStatus.OWNER_NOT_CORRECT);
-        }
-        // 5. 선물 리스트 추가
-        participant.addGiftListByOwner(dto);
         return wishPool.getWishPoolId();
     }
 
