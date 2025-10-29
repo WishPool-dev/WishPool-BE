@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @OpenAPIDefinition(
 		servers = {
 				@Server(url = "https://api.wishpool.store", description = "Default Server URL"),
-				@Server(url = "http://localhost:8080", description = "Local Development Server")
+				@Server(url = "http://localhost:8000", description = "Local Development Server")
 		}
 )public class BeApplication {
 	public static void main(String[] args) {
