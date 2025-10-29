@@ -12,8 +12,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableAsync
 @EnableJpaAuditing
-@OpenAPIDefinition(servers = {@Server(url = "https://api.wishpool.store", description = "Default Server URL")})
-public class BeApplication {
+@OpenAPIDefinition(
+		servers = {
+				@Server(url = "https://api.wishpool.store", description = "Default Server URL"),
+				@Server(url = "http://localhost:8080", description = "Local Development Server")
+		}
+)public class BeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BeApplication.class, args);
 	}
