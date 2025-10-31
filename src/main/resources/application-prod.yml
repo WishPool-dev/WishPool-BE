@@ -14,7 +14,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-
+  servlet:
+    multipart:
+      max-file-size: 30MB      # 📄 개별 파일의 최대 크기: 30MB
+      max-request-size: 500MB  # 📦 HTTP 요청 전체의 최대 크기: 500MB
   # --- OAuth2 설정 ---
   security:
     oauth2:
