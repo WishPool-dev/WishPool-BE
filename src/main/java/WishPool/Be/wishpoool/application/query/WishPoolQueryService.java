@@ -52,7 +52,7 @@ public class WishPoolQueryService {
     @Transactional(readOnly = true)
     public WishPoolDetailResponseDto findWishPoolDetail(Long wishpoolId, Long userId){
         WishPool wishPool = wishPoolRepository.findById(wishpoolId).orElseThrow(()-> new BusinessException(ErrorStatus.WISHPOOL_NOT_FOUND));
-        Long joinCount = participantRepository.getParticipantCount(wishpoolId);
+        Long joinCount = participantRepository.getParticipantCount(wishpoolId)-1;
         Participant participant = participantRepository.findWishPoolOwner(wishpoolId, ParticipantRole.OWNER);
         boolean ownerJoined = participant.getGiftList() != null;
         int d_day = calculateEndDate(wishPool);
