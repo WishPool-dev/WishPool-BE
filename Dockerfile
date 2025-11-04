@@ -1,5 +1,5 @@
 # 실행을 위한 가벼운 JRE 이미지
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jdk-jammy
 
 # 작업 디렉토리 설정
 WORKDIR /app
