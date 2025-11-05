@@ -20,7 +20,7 @@ public class ParticipantRepositoryAdapter implements ParticipantRepository{
 
     @Override
     public Long getParticipantCount(Long wishpoolId) {
-        return participantJpaRepository.countByWishPool_WishPoolId(wishpoolId);
+        return participantJpaRepository.countByWishPool_WishPoolIdAndGiftListIsNotNull(wishpoolId);
     }
 
     @Override
