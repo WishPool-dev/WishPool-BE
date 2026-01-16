@@ -45,7 +45,7 @@ public class ImageController {
 
         String finalKey = uuid + "." + extension;
 
-        fileService.uploadImageAsync(file.getBytes(), finalKey, file.getContentType());
+        fileService.uploadImageAsync(file.getBytes(), finalKey);
         // 5. 클라이언트에게 즉시 반환
         ImageUploadResponse response = new ImageUploadResponse(finalKey);
         return ResponseEntity.ok().body(response);        // 3. 파일 업로드 완료를 기다리지 않고, 생성된 키를 클라이언트에게 즉시 반환합니다.

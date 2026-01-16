@@ -23,12 +23,10 @@ public class NginxFileService implements FileService {
 
     @Override
     @Async
-    public void uploadImageAsync(byte[] fileBytes, String key, String contentType) {
-        log.info("비동기 로컬 파일 저장 시작: key={}", key);
+    public void uploadImageAsync(byte[] fileBytes, String finalKey) {
+        log.info("비동기 로컬 파일 저장 시작: key={}", finalKey);
         try {
-            // 파일명 뒤에 확장자를 붙여서 저장 경로 생성
-            String filename = key + contentType;
-            Path targetLocation = this.uploadPath.resolve(filename);
+            Path targetLocation = this.uploadPath.resolve(finalKey);
 
             Files.createDirectories(targetLocation.getParent());
 
@@ -37,9 +35,9 @@ public class NginxFileService implements FileService {
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
 
-            log.info("비동기 로컬 파일 저장 성공: 파일명={}", filename);
+            log.info("비동기 로컬 파일 저장 성공: 파일명={}", finalKey);
         } catch (IOException e) {
-            log.error("비동기 로컬 파일 저장 실패: key={}", key, e);
+            log.error("비동기 로컬 파일 저장 실패: key={}", finalKey, e);
             throw new RuntimeException("비동기 파일 저장에 실패했습니다.", e);
         }
     }
