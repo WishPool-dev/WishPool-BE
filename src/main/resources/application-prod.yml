@@ -42,15 +42,6 @@ spring:
     secret-key: "${JWT_SECRET}"
     access-token-expiration: 86400000
 
-  # --- GCP 설정 ---
-  cloud:
-    gcp:
-      project-id: "${GCP_PROJECT_ID}"
-      credentials:
-        location: "${GCP_CREDENTIALS_LOCATION}"
-      storage:
-        bucket: "${GCP_BUCKET}"
-
 # --- 서버 포트 설정 ---
 server:
   port: 8000

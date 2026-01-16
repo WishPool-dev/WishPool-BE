@@ -38,19 +38,16 @@ services:
       - spring.security.oauth2.client.registration.kakao.client-id=${OAUTH2_KAKAO}
       - spring.security.oauth2.client.registration.kakao.redirect-uri=${OAUTH2_REDIRECT_URL_PROD}
       - spring.jwt.secret-key=${JWT_SECRET}
-      - spring.cloud.gcp.project-id=${GCP_PROJECT_ID}
-      - spring.cloud.gcp.storage.bucket=${GCP_BUCKET}
-      - SPRING_CLOUD_GCP_CREDENTIALS_LOCATION=${GCP_CREDENTIALS_LOCATION}
       - DISCORD_WEBHOOK=${DISCORD_WEBHOOK}
       # 파일 url, 업로드 경로 추가
       - file_image-url=${IMAGE_URL}
-      - file_upload_path=${UPLOAD_PATH}
+      - file_upload_path=/app/uploads/
     ports:
       - "${HOST_PORT}:8000"
     networks:
       - wishpool-net
     volumes:
-      - ./uploads:/app/uploads
+      - ${UPLOAD_PATH}:/app/uploads
 # 네트워크 정의
 networks:
   wishpool-net:
