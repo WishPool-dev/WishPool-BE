@@ -9,7 +9,7 @@ spring:
   # --- JPA 설정 ---
   jpa:
     hibernate:
-      ddl-auto: update # 운영 환경에서는 보통 validate나 none으로 변경하는 것을 권장
+      ddl-auto: create # 운영 환경에서는 보통 validate나 none으로 변경하는 것을 권장
     show-sql: true                # SQL 자체를 로그에 출력
     properties:
       hibernate:
