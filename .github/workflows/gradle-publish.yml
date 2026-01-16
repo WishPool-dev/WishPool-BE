@@ -9,7 +9,6 @@ env:
   ECR_REPOSITORY: wishpool-repo 
 
 jobs:
-  # 1. 빌드해서 ECR에 올리기
   build-and-push:
     runs-on: ubuntu-latest
     steps:
