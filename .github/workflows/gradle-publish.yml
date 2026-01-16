@@ -6,7 +6,7 @@ on:
 
 env:
   AWS_REGION: ap-northeast-2
-  ECR_REPOSITORY: wishpool-repo # ★ AWS ECR에 만들어둔 리포지토리 이름
+  ECR_REPOSITORY: wishpool-repo 
 
 jobs:
   # 1. 빌드해서 ECR에 올리기
