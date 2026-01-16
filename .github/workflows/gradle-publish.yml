@@ -94,7 +94,7 @@ jobs:
             cat << EOF > .env
             IMAGE_FULL_PATH=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
             HOST_PORT=8000
-            UPLOAD_PATH=/etc/var/www/wishpool
+            UPLOAD_PATH=/var/www/wishpool
             DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
             DB_NAME=wishpool
             DB_USER_PROD=${{ secrets.DB_USER_PROD }}
