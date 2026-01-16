@@ -26,18 +26,20 @@ public class NginxFileService implements FileService {
     public void uploadImageAsync(byte[] fileBytes, String key, String contentType) {
         log.info("비동기 로컬 파일 저장 시작: key={}", key);
         try {
-            // 2. 저장할 최종 경로 생성 (설정된 기본경로 + 파일명)
-            Path targetLocation = this.uploadPath.resolve(key);
+            String extension = getExtension(contentType);
+
+            // 파일명 뒤에 확장자를 붙여서 저장 경로 생성
+            String filename = key + extension;
+            Path targetLocation = this.uploadPath.resolve(filename);
+
             Files.createDirectories(targetLocation.getParent());
 
-            // 3. 파일 쓰기 (byte[] 데이터를 파일로 저장)
-            // StandardOpenOption.CREATE: 없으면 생성
-            // StandardOpenOption.TRUNCATE_EXISTING: 있으면 덮어쓰기
+            // 3. 파일 쓰기
             Files.write(targetLocation, fileBytes,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
 
-            log.info("비동기 로컬 파일 저장 성공: key={}", key);
+            log.info("비동기 로컬 파일 저장 성공: 파일명={}", filename);
 
         } catch (IOException e) {
             log.error("비동기 로컬 파일 저장 실패: key={}", key, e);
@@ -59,5 +61,21 @@ public class NginxFileService implements FileService {
     @Override
     public String getImageURL(String key) {
         return accessUrl + key;
+    }
+
+    private String getExtension(String contentType) {
+        if (contentType == null) return "";
+
+        switch (contentType) {
+            case "image/jpeg":
+                return ".jpg";
+            case "image/png":
+                return ".png";
+            case "image/gif":
+                return ".gif";
+            // 필요하면 더 추가하세요 (svg, webp 등)
+            default:
+                return ""; // 알 수 없는 타입이면 확장자 없이 저장
+        }
     }
 }

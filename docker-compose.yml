@@ -12,7 +12,7 @@ services:
       MYSQL_USER: ${DB_USER_PROD}
       MYSQL_PASSWORD: ${DB_PROD_PASSWORD}
     ports:
-      - "${DB_PROD_PORT}:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - wishpool-db-data:/var/lib/mysql
     networks:
@@ -43,7 +43,7 @@ services:
       - file_image-url=${IMAGE_URL}
       - file_upload_path=/app/uploads/
     ports:
-      - "${HOST_PORT}:8000"
+      - "127.0.0.1:8000:8000"
     networks:
       - wishpool-net
     volumes:
