@@ -29,9 +29,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	runtimeOnly 'com.mysql:mysql-connector-j:8.0.33'
 
-	// ✨ Google Cloud Platform Storage (버전 삭제 -> BOM이 관리)
-	implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
-
 	// Spring Security & OAuth2
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

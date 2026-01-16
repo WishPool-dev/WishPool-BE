@@ -54,3 +54,8 @@ logging:
 discord:
   webhook:
     url: "${DISCORD_WEBHOOK}"
+
+file:
+  image-url: ${IMAGE_URL}
+  upload:
+    path: ${UPLOAD_PATH}

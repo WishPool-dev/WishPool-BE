@@ -2,7 +2,8 @@ package WishPool.Be.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
-import org.threeten.bp.LocalDateTime;
+
+import java.time.LocalDateTime;
 
 /**
  * http 예외 발생 시 발생 API 경로 및 시간을 표현하는 클래스
