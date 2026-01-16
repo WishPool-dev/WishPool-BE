@@ -56,7 +56,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # [★추가됨] 1. 폴더가 없으면 먼저 만들기 (이게 있어야 안전합니다)
+      # 1. 폴더 생성 (여긴 잘 적으셨음!)
       - name: Create directory
         uses: appleboy/ssh-action@master
         with:
@@ -66,25 +66,26 @@ jobs:
           port: 2222 
           script: mkdir -p ~/wishpool
 
-      # 2. 그 만들어진 폴더에 파일 전송
+      # 2. 파일 전송 (★여기에 port: 2222가 없었습니다!)
       - name: Copy docker-compose to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          port: 2222 # <--- 여기 꼭 추가해야 합니다
           source: "docker-compose.yml"
-          target: "~/wishpool" # 이제 폴더가 확실히 있으니 여기 안으로 쏙 들어갑니다.
+          target: "~/wishpool"
 
-      # 3. 접속해서 실행
+      # 3. 배포 실행 (★여기도 port: 2222가 없었습니다!)
       - name: SSH to Server and Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          port: 2222 # <--- 여기도 꼭 추가해야 합니다
           script: |
-            # 폴더가 있으니 이동 가능!
             cd ~/wishpool 
 
             # 1. ECR 로그인
@@ -95,6 +96,7 @@ jobs:
             IMAGE_FULL_PATH=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
             HOST_PORT=8000
             UPLOAD_PATH=/etc/var/www/wishpool
+            DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
             DB_NAME=wishpool
             DB_USER_PROD=${{ secrets.DB_USER_PROD }}
             DB_PROD_PASSWORD=${{ secrets.DB_PROD_PASSWORD }}
