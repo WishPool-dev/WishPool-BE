@@ -2,10 +2,12 @@ package WishPool.Be.file.presentation;
 
 import WishPool.Be.file.application.dto.response.ImageUploadResponse;
 import WishPool.Be.file.application.service.FileService;
+import WishPool.Be.file.infra.GcsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +17,18 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Tag(name = "파일/이미지 API", description = "이미지 업로드, 조회, 삭제 관련 API")
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/files")
 public class ImageController {
+
     private final FileService fileService;
 
+    public ImageController(@Qualifier("nginxFileService") FileService fileService) {
+        this.fileService = fileService;
+    }
+
     @Operation(summary = "이미지 업로드",
-            description = "GCS에 이미지를 업로드하고, 즉시 이미지 키를 반환합니다. (비동기 처리)")
+            description = "nginx에 이미지를 업로드하고, 즉시 이미지 키를 반환합니다. (비동기 처리)")
     @PostMapping
     public ResponseEntity<ImageUploadResponse> uploadImage(
             @Parameter(description = "업로드할 이미지 파일") @RequestParam("file") MultipartFile file) throws IOException {
