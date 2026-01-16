@@ -56,7 +56,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # docker-compose.yml 파일 서버로 전송
+      # [★추가됨] 1. 폴더가 없으면 먼저 만들기 (이게 있어야 안전합니다)
+      - name: Create directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: mkdir -p ~/wishpool
+
+      # 2. 그 만들어진 폴더에 파일 전송
       - name: Copy docker-compose to server
         uses: appleboy/scp-action@master
         with:
@@ -64,9 +73,9 @@ jobs:
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "docker-compose.yml"
-          target: "~/wishpool"
+          target: "~/wishpool" # 이제 폴더가 확실히 있으니 여기 안으로 쏙 들어갑니다.
 
-      # SSH로 접속해서 실행
+      # 3. 접속해서 실행
       - name: SSH to Server and Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -74,28 +83,21 @@ jobs:
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd ~/wishpool
+            # 폴더가 있으니 이동 가능!
+            cd ~/wishpool 
 
-            # 1. 서버에서 ECR 로그인 (이미지 받아오기 위해)
+            # 1. ECR 로그인
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
 
-            # 2. .env 파일 생성 (환경변수 주입)
+            # 2. .env 파일 생성
             cat << EOF > .env
-            # --- 이미지 경로 (ECR 주소) ---
             IMAGE_FULL_PATH=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
-            
-            # --- 경로 및 포트 ---
             HOST_PORT=8000
             UPLOAD_PATH=/etc/var/www/wishpool
-            
-            # --- DB 설정 ---
-            DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
             DB_NAME=wishpool
             DB_USER_PROD=${{ secrets.DB_USER_PROD }}
             DB_PROD_PASSWORD=${{ secrets.DB_PROD_PASSWORD }}
             DB_PROD_PORT=3306
-            
-            # --- Spring 설정 ---
             DB_URL_PROD=jdbc:mysql://wishpool-db:3306/wishpool?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
             OAUTH2_KAKAO=${{ secrets.OAUTH2_KAKAO }}
             OAUTH2_REDIRECT_URL_PROD=${{ secrets.OAUTH2_REDIRECT_URL_PROD }}
@@ -104,7 +106,7 @@ jobs:
             IMAGE_URL=${{ secrets.IMAGE_URL }}
             EOF
 
-            # 3. 실행 (최신 이미지 pull -> 재시작 -> 청소)
+            # 3. 실행
             docker compose pull
             docker compose up -d
             docker image prune -f
