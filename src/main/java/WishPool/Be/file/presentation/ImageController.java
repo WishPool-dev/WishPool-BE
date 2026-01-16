@@ -5,10 +5,9 @@ import WishPool.Be.file.application.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,11 +33,21 @@ public class ImageController {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(new ImageUploadResponse("업로드된 이미지가 없습니다."));
         }
-        // 1. GCS에 저장될 파일의 키를 미리 생성합니다.
-        String imageKey = UUID.randomUUID().toString();
-        // 2. 비동기 메소드를 호출하여 파일 업로드를 위임합니다.
-        fileService.uploadImageAsync(file.getBytes(), imageKey, file.getContentType());
-        ImageUploadResponse response = new ImageUploadResponse(imageKey);
+
+        // 1. UUID 생성
+        String uuid = UUID.randomUUID().toString();
+
+        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+        if (extension == null || extension.isEmpty()) {
+            extension = "jpg";
+        }
+
+        String finalKey = uuid + "." + extension;
+
+        fileService.uploadImageAsync(file.getBytes(), finalKey, file.getContentType());
+        // 5. 클라이언트에게 즉시 반환
+        ImageUploadResponse response = new ImageUploadResponse(finalKey);
         return ResponseEntity.ok().body(response);        // 3. 파일 업로드 완료를 기다리지 않고, 생성된 키를 클라이언트에게 즉시 반환합니다.
     }
 
