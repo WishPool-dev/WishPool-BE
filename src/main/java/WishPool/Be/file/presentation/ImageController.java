@@ -2,7 +2,6 @@ package WishPool.Be.file.presentation;
 
 import WishPool.Be.file.application.dto.response.ImageUploadResponse;
 import WishPool.Be.file.application.service.FileService;
-import WishPool.Be.file.infra.GcsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
