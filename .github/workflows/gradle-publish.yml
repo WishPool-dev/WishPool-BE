@@ -63,6 +63,7 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          port: 2222 
           script: mkdir -p ~/wishpool
 
       # 2. 그 만들어진 폴더에 파일 전송
