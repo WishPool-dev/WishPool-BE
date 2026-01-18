@@ -22,10 +22,14 @@ public class GiftItem {
     @Column(name = "item_name", nullable = false)
     private String itemName;
 
+    @Column(name = "image_url", length = 2048, nullable = true)
+    private String imageUrl;
+
     public static GiftItem createItem(GiftItemDto giftItemDto){
         return GiftItem.builder()
                 .itemUrl(giftItemDto.itemUrl())
                 .itemName(giftItemDto.itemName())
+                .imageUrl(giftItemDto.imageUrl())
                 .build();
     }
     // 연관관계 편의 메소드

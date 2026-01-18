@@ -12,9 +12,9 @@ public record SelectedGiftsDto(String celebrant, List<SelectedGiftsListDto> sele
                 giftItems.stream().map(SelectedGiftsListDto::from).collect(Collectors.toList())
         );
     }
-    public static record SelectedGiftsListDto(Long giftId, String giftName, String giftImage) {
+    public static record SelectedGiftsListDto(Long giftId, String giftName, String giftImage, String imageUrl) {
         public static SelectedGiftsListDto from(GiftItem giftItem){
-            return new SelectedGiftsListDto(giftItem.getGiftItemId(), giftItem.getItemName(), giftItem.getItemUrl());
+            return new SelectedGiftsListDto(giftItem.getGiftItemId(), giftItem.getItemName(), giftItem.getItemUrl(), giftItem.getImageUrl());
         }
     }
 }
