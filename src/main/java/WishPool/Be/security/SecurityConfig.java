@@ -68,7 +68,8 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**",
                                 "/contact/**",
-                                "/wishpools/**"
+                                "/wishpools/**",
+                                "/api/files"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/files/**").permitAll()      // GET 요청은 누구나 가능
                         .requestMatchers(HttpMethod.POST, "/api/files").authenticated()   // POST 요청은 인증 필요

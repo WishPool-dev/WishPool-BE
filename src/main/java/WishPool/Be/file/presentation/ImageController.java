@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Tag(name = "파일/이미지 API", description = "이미지 업로드, 조회, 삭제 관련 API")
 @RestController
-@RequestMapping("api/files")
+@RequestMapping("/api/files")
 public class ImageController {
 
     private final FileService fileService;
