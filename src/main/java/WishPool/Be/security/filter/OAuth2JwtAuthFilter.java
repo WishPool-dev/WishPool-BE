@@ -53,7 +53,6 @@ public class OAuth2JwtAuthFilter extends OncePerRequestFilter {
             try {
                 // [수정] 2. 토큰이 유효한 경우(verifyAccessToken 통과)에만 SecurityContext에 인증 정보를 등록합니다.
                 if (jwtUtil.verifyAccessToken(accessToken)) {
-                    log.info("여기 걸림");
                     String userId = jwtUtil.getId(accessToken);
                     String role = jwtUtil.getRole(accessToken);
                     String name = jwtUtil.getName(accessToken);
