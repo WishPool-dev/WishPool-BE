@@ -11,9 +11,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -79,6 +81,14 @@ public class SecurityConfig {
                         // 나머지는 모두 허용 (필요에 따라 변경)
                         .anyRequest().permitAll()
                 )
+                .headers(headers -> headers
+                        // 1. 클릭재킹 방지 ->iframe
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                        // 2. 브라우저가 파일 타입을 추측하지 못하게 함
+                        .contentTypeOptions(HeadersConfigurer.ContentTypeOptionsConfig::disable) // 기본적으로 켜져 있지만 명시 가능
+                        // 3. XSS 보호
+                        .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+                )
                 // OAuth2 로그인 설정 (인증 성공/실패 핸들러 등록)
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
@@ -97,12 +107,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://wishpool.vercel.app/","https://api.wishpool.store", "https://wishpool.store","https://wishpool.store/"));
+        config.setAllowedOrigins(Arrays.asList("https://wishpool.vercel.app/","https://api.wishpool.store", "https://wishpool.store","https://wishpool.store/"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowCredentials(true);
         config.setMaxAge(3600L);
-
+        config.setAllowCredentials(true);
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Origin", "Accept"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
