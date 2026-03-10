@@ -107,7 +107,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("https://wishpool.vercel.app/","https://api.wishpool.store", "https://wishpool.store","https://wishpool.store/"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://wishpool.vercel.app/","https://api.wishpool.store", "https://wishpool.store","https://wishpool.store/"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setMaxAge(3600L);
         config.setAllowCredentials(true);
